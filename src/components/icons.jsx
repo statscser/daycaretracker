@@ -7,9 +7,10 @@ export function Ring({ ratio, size = 36, isToday, isEmpty, reason }) {
   let col = M.sage;
   if (f < 1) {
     if      (reason === "sick")             col = M.sickYellow;
-    else if (reason === "vacation")         col = M.lav;
+    else if (reason === "vacation")         col = M.mint;
     else if (reason === "holiday")          col = M.holiday;
-    else if (reason === "teacher_training") col = M.mint;
+    else if (reason === "teacher_training") col = M.lav;
+    else if (reason === "other")            col = M.gray;
     else if (f < 0.5)                       col = M.rose;
     else                                    col = M.sageDeep;
   }

@@ -68,8 +68,8 @@ export const ABSENCE_QUOTES = [
 
 export const ABSENCE_REASONS = [
   { id: "sick",             label: "💊 生病",    icon: "💊", color: M.sickYellow },
-  { id: "vacation",         label: "✈️ 旅行",    icon: "✈️", color: M.lav },
+  { id: "vacation",         label: "✈️ 旅行",    icon: "✈️", color: M.mint },
   { id: "holiday",          label: "📆 公共假期", icon: "📆", color: M.holiday },
-  { id: "teacher_training", label: "💸 老师培训", icon: "💸", color: M.mint },
+  { id: "teacher_training", label: "💸 老师培训", icon: "💸", color: M.lav },
   { id: "other",            label: "💔 其他",    icon: "💔", color: M.gray },
 ];

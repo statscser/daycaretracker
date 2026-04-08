@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { M, CURRENCIES, HUMOR_MAP, HUMOR_DEFAULT } from "./constants";
+import { M, CURRENCIES, HUMOR_MAP, HUMOR_DEFAULT, ABSENCE_REASONS } from "./constants";
 import { loadData, saveData } from "./lib/storage";
 import { getDays, getFirst, getTuitionForMonth, calculatePeriodStats, aggregateStats } from "./lib/stats";
 import { HeaderSection }    from "./components/HeaderSection";
@@ -151,14 +151,7 @@ export default function App() {
 
       {/* Legend */}
       <div style={{ display:"flex", justifyContent:"center", gap:10, marginTop:12, flexWrap:"wrap" }}>
-        {[
-          { c:M.sage,       l:"全勤 ✨" },
-          { c:M.sickYellow, l:"生病 💊" },
-          { c:M.lav,        l:"旅行 ✈️" },
-          { c:M.holiday,    l:"假期 📆" },
-          { c:M.mint,       l:"老师培训 💸" },
-          { c:M.gray,       l:"其他 💔" },
-        ].map((x, i) => (
+        {[{ c:M.sage, l:"全勤 ✨" }, ...ABSENCE_REASONS.map(r => ({ c:r.color, l:r.label }))].map((x, i) => (
           <div key={i} style={{ display:"flex", alignItems:"center", gap:4 }}>
             <div style={{ width:10, height:10, borderRadius:"50%", background:x.c }}/>
             <span style={{ fontSize:10, fontWeight:600, color:M.lChar }}>{x.l}</span>
