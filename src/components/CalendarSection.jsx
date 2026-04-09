@@ -316,7 +316,7 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
                     {fmt(s.sunk)}
                   </div>
                   <div style={{ fontSize:9, color:M.lChar, fontWeight:600, marginTop:1 }}>
-                    缺勤 {s.totalAbsDays.toFixed(0)} 天
+                    缺勤 {s.totalAbsDays.toFixed(1)} 天
                   </div>
                 </> : (
                   <div style={{ fontSize:9, fontWeight:700, color:M.sageDk }}>✨ 全勤</div>
@@ -435,7 +435,7 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
               textAlign:"center", fontSize:11, color:M.roseDk, fontWeight:700,
               background:`${M.rose}15`, borderRadius:12, padding:"5px 8px", marginBottom:8, lineHeight:1.5,
             }}>
-              💸 今日踏空: {fmt(pendingEntry.hours * hrCost)}
+              💸 今日损失: {fmt(pendingEntry.hours * hrCost)}
               {pendingEntry.reason === "sick"             && <><br/><span style={{ fontSize:10, color:M.lChar }}>别忘了 copay 还要再花一笔 😳</span></>}
               {pendingEntry.reason === "vacation"         && <><br/><span style={{ fontSize:10, color:M.lChar }}>机票酒店另计，不堪细算 🫠</span></>}
               {pendingEntry.reason === "holiday"          && <><br/><span style={{ fontSize:10, color:M.lChar }}>Daycare 放假你不休，谁说的 💔</span></>}

@@ -37,7 +37,7 @@ export function DashboardCard({ sunk, dailyCost, totalAbsDays, wdays, mood, fmt,
         color: sunk > 0 ? M.roseDk : M.sageDk, transition:"color 0.3s",
       }}>
         {fmt(sunk)}
-        <span style={{ fontSize:14, fontWeight:600, letterSpacing:0, marginLeft:4, opacity:0.7 }}>已踏空</span>
+        <span style={{ fontSize:14, fontWeight:600, letterSpacing:0, marginLeft:4, opacity:0.7 }}>白给</span>
       </div>
       {sunk > 0
         ? <p style={{ fontSize:12, color:M.rose, margin:"6px 0 0", fontWeight:600, lineHeight:1.4 }}>{getHumor(sunk)}</p>
@@ -52,7 +52,7 @@ export function DashboardCard({ sunk, dailyCost, totalAbsDays, wdays, mood, fmt,
         {[
           { l:"应入园",  v:`${wdays}天`,                   i:"📅" },
           { l:"日均学费", v:fmt(dailyCost),                 i:"💰" },
-          { l:"已踏空",  v:`${totalAbsDays.toFixed(1)}天`,  i:"🏠" },
+          { l:"缺勤",  v:`${totalAbsDays.toFixed(1)}天`,  i:"🏠" },
         ].map((x, idx) => (
           <div key={idx} style={{ textAlign:"center", minWidth:64 }}>
             <div style={{ fontSize:15 }}>{x.i}</div>
