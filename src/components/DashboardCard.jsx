@@ -37,7 +37,7 @@ export function DashboardCard({ sunk, dailyCost, totalAbsDays, wdays, mood, fmt,
         color: sunk > 0 ? M.roseDk : M.sageDk, transition:"color 0.3s",
       }}>
         {fmt(sunk)}
-        <span style={{ fontSize:14, fontWeight:600, letterSpacing:0, marginLeft:4, opacity:0.7 }}>白给</span>
+        <span style={{ fontSize:14, fontWeight:600, letterSpacing:0, marginLeft:4, opacity:0.7 }}>已蒸发</span>
       </div>
       {sunk > 0
         ? <p style={{ fontSize:12, color:M.rose, margin:"6px 0 0", fontWeight:600, lineHeight:1.4 }}>{getHumor(sunk)}</p>
