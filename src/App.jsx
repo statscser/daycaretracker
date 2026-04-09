@@ -114,7 +114,7 @@ export default function App() {
       <div style={{ position:"absolute",top:-60,right:-40,width:160,height:160,borderRadius:"50%",background:`${M.sage}18`,pointerEvents:"none"}}/>
       <div style={{ position:"absolute",top:200,left:-50,width:120,height:120,borderRadius:"50%",background:`${M.rose}15`,pointerEvents:"none"}}/>
 
-      <HeaderSection onSettingsClick={() => setSetup(true)} />
+      <HeaderSection onSettingsClick={() => setSetup(true)} onToday={goToday} />
 
       <SegmentedControl value={viewMode} onChange={setViewMode} />
 
@@ -145,8 +145,10 @@ export default function App() {
         dh={dh} hrCost={moStats.hrCost} fmt={fmt}
         getEntry={getEntry} setEntry={setEntry}
         isWe={isWe} isToday={isToday} ratio={ratio}
-        onPrev={prev} onNext={next} onToday={goToday}
+        onPrev={prev} onNext={next}
         viewMode={viewMode} quarter={quarter}
+        absences={absences} tuitionHistory={tuitionHistory} sh={sh} eh={eh}
+        onGoToMonth={(m) => { setViewMode("month"); setMo(m); }}
       />
 
       {/* Legend */}
@@ -162,7 +164,7 @@ export default function App() {
       {/* Footer */}
       <div style={{ textAlign:"center", marginTop:20, fontSize:10, color:`${M.lChar}88`, fontWeight:600, lineHeight:1.6 }}>
         <p style={{ margin:0 }}>「养娃就是一场看不到尽头的天使投资」</p>
-        <p style={{ margin:"2px 0 0", fontSize:9 }}>—— 每一位含泪续费的爸妈</p>
+        <p style={{ margin:"2px 0 0", fontSize:9 }}>—— 致每一位含泪续费的爸妈</p>
       </div>
     </div>
   );
