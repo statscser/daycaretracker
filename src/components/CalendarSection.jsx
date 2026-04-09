@@ -54,7 +54,7 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
                                   isWe, isToday, ratio, onPrev, onNext,
                                   viewMode, quarter,
                                   absences, tuitionHistory, sh, eh,
-                                  onGoToMonth }) {
+                                  onGoToMonth, onToday }) {
   const [sel,    setSel]    = useState(null);
   const [popPos, setPopPos] = useState({ x: 0, y: 0 });
   const calRef = useRef(null);
@@ -87,9 +87,17 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
     );
 
   const NavRow = () => (
-    <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12, padding:"0 4px" }}>
+    <div style={{ position:"relative", display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12, padding:"0 4px" }}>
       <button onClick={onPrev} style={{ background:"none",border:"none",fontSize:20,cursor:"pointer",padding:"4px 8px",color:M.lChar,fontFamily:"inherit" }}>‹</button>
-      <div style={{ display:"flex", alignItems:"center", gap:8 }}>{navLabel}</div>
+      {/* Title + 回到当下: absolutely centered as a group */}
+      <div style={{ position:"absolute", left:"50%", transform:"translateX(-50%)", display:"flex", alignItems:"center", gap:6 }}>
+        {navLabel}
+        <button onClick={onToday} style={{
+          background:`${M.sage}22`, border:`1.5px solid ${M.sage}50`, borderRadius:20,
+          fontSize:11, fontWeight:700, color:M.lChar, padding:"3px 10px",
+          cursor:"pointer", fontFamily:"inherit", lineHeight:1.4,
+        }}>回到当下</button>
+      </div>
       <button onClick={onNext} style={{ background:"none",border:"none",fontSize:20,cursor:"pointer",padding:"4px 8px",color:M.lChar,fontFamily:"inherit" }}>›</button>
     </div>
   );
@@ -272,12 +280,7 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
   // ─── Month view ────────────────────────────────────────────────────────────
   return (
     <div ref={calRef} style={cardStyle}>
-      {/* Navigation row */}
-      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12, padding:"0 4px" }}>
-        <button onClick={onPrev} style={{ background:"none",border:"none",fontSize:20,cursor:"pointer",padding:"4px 8px",color:M.lChar,fontFamily:"inherit" }}>‹</button>
-        <div style={{ display:"flex", alignItems:"center", gap:8 }}>{navLabel}</div>
-        <button onClick={onNext} style={{ background:"none",border:"none",fontSize:20,cursor:"pointer",padding:"4px 8px",color:M.lChar,fontFamily:"inherit" }}>›</button>
-      </div>
+      <NavRow />
 
       {/* Weekday headers */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:2, marginBottom:4 }}>

@@ -100,7 +100,6 @@ export default function App() {
     }
   };
 
-  const goToday = () => { setYr(now.getFullYear()); setMo(now.getMonth()); };
 
   return (
     <div style={{
@@ -114,7 +113,7 @@ export default function App() {
       <div style={{ position:"absolute",top:-60,right:-40,width:160,height:160,borderRadius:"50%",background:`${M.sage}18`,pointerEvents:"none"}}/>
       <div style={{ position:"absolute",top:200,left:-50,width:120,height:120,borderRadius:"50%",background:`${M.rose}15`,pointerEvents:"none"}}/>
 
-      <HeaderSection onSettingsClick={() => setSetup(true)} onToday={goToday} />
+      <HeaderSection onSettingsClick={() => setSetup(true)} />
 
       <SegmentedControl value={viewMode} onChange={setViewMode} />
 
@@ -149,6 +148,7 @@ export default function App() {
         viewMode={viewMode} quarter={quarter}
         absences={absences} tuitionHistory={tuitionHistory} sh={sh} eh={eh}
         onGoToMonth={(m) => { setViewMode("month"); setMo(m); }}
+        onToday={() => { setViewMode("month"); setYr(now.getFullYear()); setMo(now.getMonth()); }}
       />
 
       {/* Legend */}
