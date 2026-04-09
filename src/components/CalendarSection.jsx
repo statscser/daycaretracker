@@ -86,19 +86,66 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
       </>
     );
 
-  const NavRow = () => (
-    <div style={{ position:"relative", display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12, padding:"0 4px" }}>
-      <button onClick={onPrev} style={{ background:"none",border:"none",fontSize:20,cursor:"pointer",padding:"4px 8px",color:M.lChar,fontFamily:"inherit" }}>‹</button>
-      {/* Title + 回到当下: absolutely centered as a group */}
-      <div style={{ position:"absolute", left:"50%", transform:"translateX(-50%)", display:"flex", alignItems:"center", gap:6 }}>
-        {navLabel}
+ const NavRow = () => (
+    <div style={{ 
+      position: "relative", 
+      display: "flex", 
+      alignItems: "center", 
+      justifyContent: "space-between", 
+      marginBottom: 12, 
+      padding: "0 4px",
+      minHeight: "36px"
+    }}>
+      {/* 左箭头 */}
+      <button onClick={onPrev} style={{ 
+        background: "none", border: "none", fontSize: 24, cursor: "pointer", 
+        padding: "4px 12px", color: M.lChar, fontFamily: "inherit", zIndex: 10 
+      }}>‹</button>
+
+      {/* 居中容器 */}
+      <div style={{ 
+        flex: 1,
+        display: "flex", 
+        justifyContent: "center", 
+        alignItems: "center",
+        overflow: "visible"
+      }}>
+        {/* 核心技巧：左侧占位符宽度 = 右侧按钮宽度，确保文字在物理中点 */}
+        <div style={{ visibility: "hidden", display: "flex", alignItems: "center" }}>
+          <button style={{ padding: "2px 10px", marginLeft: 8, fontSize: 11 }}>回到当下</button>
+        </div>
+
+        <span style={{ 
+          fontSize: 16, 
+          fontWeight: 800, 
+          color: M.char,
+          whiteSpace: "nowrap",
+          margin: "0 8px"
+        }}>
+          {navLabel}
+        </span>
+
+        {/* 实际可见的按钮 */}
         <button onClick={onToday} style={{
-          background:`${M.sage}22`, border:`1.5px solid ${M.sage}50`, borderRadius:20,
-          fontSize:11, fontWeight:700, color:M.lChar, padding:"3px 10px",
-          cursor:"pointer", fontFamily:"inherit", lineHeight:1.4,
-        }}>回到当下</button>
+          background: `${M.sage}22`, 
+          border: `1.5px solid ${M.sage}50`, 
+          borderRadius: 20,
+          fontSize: 11, 
+          fontWeight: 500, 
+          color: M.lChar, 
+          padding: "2px 10px",
+          cursor: "pointer", 
+          fontFamily: "inherit", 
+          lineHeight: 1.5,
+          whiteSpace: "nowrap"
+        }}>回到今天</button>
       </div>
-      <button onClick={onNext} style={{ background:"none",border:"none",fontSize:20,cursor:"pointer",padding:"4px 8px",color:M.lChar,fontFamily:"inherit" }}>›</button>
+
+      {/* 右箭头 */}
+      <button onClick={onNext} style={{ 
+        background: "none", border: "none", fontSize: 24, cursor: "pointer", 
+        padding: "4px 12px", color: M.lChar, fontFamily: "inherit", zIndex: 10 
+      }}>›</button>
     </div>
   );
 
