@@ -112,33 +112,33 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
       }}>
         {/* 核心技巧：左侧占位符宽度 = 右侧按钮宽度，确保文字在物理中点 */}
         <div style={{ visibility: "hidden", display: "flex", alignItems: "center" }}>
-          <button style={{ padding: "2px 10px", marginLeft: 8, fontSize: 11 }}>回到当下</button>
+          <button style={{ padding: "2px 8px", marginLeft: 6, fontSize: 11 }}>今天</button>
         </div>
 
-        <span style={{ 
-          fontSize: 16, 
-          fontWeight: 800, 
+        <span style={{
+          fontSize: 16,
+          fontWeight: 800,
           color: M.char,
           whiteSpace: "nowrap",
-          margin: "0 8px"
+          margin: "0 6px"
         }}>
           {navLabel}
         </span>
 
         {/* 实际可见的按钮 */}
         <button onClick={onToday} style={{
-          background: `${M.sage}22`, 
-          border: `1.5px solid ${M.sage}50`, 
+          background: `${M.sage}22`,
+          border: `1.5px solid ${M.sage}50`,
           borderRadius: 20,
-          fontSize: 11, 
-          fontWeight: 500, 
-          color: M.lChar, 
-          padding: "2px 10px",
-          cursor: "pointer", 
-          fontFamily: "inherit", 
+          fontSize: 11,
+          fontWeight: 500,
+          color: M.lChar,
+          padding: "2px 8px",
+          cursor: "pointer",
+          fontFamily: "inherit",
           lineHeight: 1.5,
           whiteSpace: "nowrap"
-        }}>回到今天</button>
+        }}>今天</button>
       </div>
 
       {/* 右箭头 */}
