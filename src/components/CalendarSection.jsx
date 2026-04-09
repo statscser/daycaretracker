@@ -55,20 +55,24 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
                                   viewMode, quarter,
                                   absences, tuitionHistory, sh, eh,
                                   onGoToMonth, onToday }) {
-  const [sel,    setSel]    = useState(null);
-  const [popPos, setPopPos] = useState({ x: 0, y: 0 });
+  const [sel,          setSel]          = useState(null);
+  const [pendingEntry, setPendingEntry] = useState({ hours: 0, reason: "sick" });
   const calRef = useRef(null);
 
   useEffect(() => { setSel(null); }, [yr, mo, viewMode]);
 
-  const selEntry = sel !== null ? getEntry(sel) : { hours: 0, reason: "sick" };
+  // Snapshot the saved entry when popup opens; discard on close
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { if (sel !== null) setPendingEntry(getEntry(sel)); }, [sel]);
 
-  const clickDay = (d, e) => {
+  const clickDay = (d) => {
     if (isWe(d)) return;
-    const r  = e.currentTarget.getBoundingClientRect();
-    const cr = calRef.current?.getBoundingClientRect() || { left: 0, top: 0 };
-    setPopPos({ x: r.left - cr.left + r.width / 2, y: r.top - cr.top - 10 });
     setSel(d);
+  };
+
+  const confirmEntry = () => {
+    setEntry(sel, pendingEntry.hours, pendingEntry.reason);
+    setSel(null);
   };
 
   const navLabel =
@@ -152,6 +156,7 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
   const cardStyle = {
     background:M.white, borderRadius:28, padding:"16px 12px 12px",
     boxShadow:`0 8px 32px ${M.brown}12`, border:`1.5px solid ${M.brown}15`, position:"relative",
+    width:"100%", boxSizing:"border-box",
   };
 
   // ─── Quarter view ──────────────────────────────────────────────────────────
@@ -342,9 +347,7 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
       {/* Day cells */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:2 }}>
         {Array.from({ length: first }).map((_, i) => (
-          <div key={`e${i}`} style={{ aspectRatio:"1", display:"flex", alignItems:"center", justifyContent:"center" }}>
-            <Ring ratio={1} size={36} isEmpty />
-          </div>
+          <div key={`e${i}`} style={{ aspectRatio:"1" }} />
         ))}
         {Array.from({ length: dim }, (_, i) => i + 1).map(d => {
           const we    = isWe(d);
@@ -352,18 +355,22 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
           const ab    = entry.hours;
           const td    = isToday(d);
           return (
-            <div key={d} onClick={e => clickDay(d, e)} style={{
+            <div key={d} onClick={() => clickDay(d)} style={{
               aspectRatio:"1", display:"flex", flexDirection:"column",
               alignItems:"center", justifyContent:"center",
               cursor: we ? "default" : "pointer",
               borderRadius:14, position:"relative", transition:"all 0.15s",
               background: sel === d ? `${M.lav}25` : "transparent",
               opacity: we ? 0.4 : 1,
+              overflow:"hidden", minWidth:0,
             }}>
-              <Ring ratio={ratio(d)} size={36} isToday={td} isEmpty={false}
-                reason={ab > 0 ? entry.reason : null} />
+              {/* Ring fills 80% of the cell width so it never overflows */}
+              <div style={{ width:"80%", aspectRatio:"1" }}>
+                <Ring ratio={ratio(d)} size={36} isToday={td} isEmpty={false}
+                  reason={ab > 0 ? entry.reason : null} responsive />
+              </div>
               <span style={{
-                fontSize:9, fontWeight:700, marginTop:1,
+                fontSize:9, fontWeight:700, lineHeight:1, marginTop:1,
                 color: td ? M.rose : ab > 0 ? M.roseDk : M.lChar,
               }}>{d}</span>
             </div>
@@ -376,10 +383,11 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
         <div onClick={() => setSel(null)}
           style={{ position:"fixed", top:0, left:0, right:0, bottom:0, zIndex:50 }}/>
         <div style={{
-          position:"absolute",
-          left: Math.min(Math.max(popPos.x - 140, 4), 170),
-          top:  Math.max(popPos.y - 300, 4),
-          width:280, background:M.white, borderRadius:24, padding:"18px 18px 14px",
+          position:"fixed",
+          left:"50%", top:"50%",
+          transform:"translate(-50%,-50%)",
+          width:"88%", maxWidth:280,
+          background:M.white, borderRadius:24, padding:"18px 18px 14px",
           boxShadow:`0 12px 40px ${M.char}25`, border:`2px solid ${M.brown}25`, zIndex:100,
         }}>
           <div style={{ textAlign:"center", marginBottom:10 }}>
@@ -389,48 +397,52 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
             </div>
           </div>
 
-          {/* Reason selector */}
-          <div style={{ display:"flex", gap:5, justifyContent:"center", marginBottom:10, flexWrap:"wrap" }}>
-            {ABSENCE_REASONS.map(r => (
-              <button key={r.id} onClick={() => {
-                const hrs = selEntry.hours === 0 ? dh : selEntry.hours;
-                setEntry(sel, hrs, r.id);
-              }} style={{
-                padding:"5px 9px", borderRadius:12, fontSize:11, fontWeight:700,
-                fontFamily:"inherit", cursor:"pointer", transition:"all 0.15s",
-                border: selEntry.reason === r.id ? `2px solid ${M.sageDk}` : `1.5px solid ${M.brown}25`,
-                background: selEntry.reason === r.id ? `${M.sage}25` : "transparent", color:M.char,
-              }}>{r.label}</button>
+          {/* Reason selector — row 1: first 3, row 2: last 2 */}
+          <div style={{ display:"flex", flexDirection:"column", gap:5, marginBottom:10 }}>
+            {[ABSENCE_REASONS.slice(0, 3), ABSENCE_REASONS.slice(3)].map((group, gi) => (
+              <div key={gi} style={{ display:"flex", gap:5, justifyContent:"center" }}>
+                {group.map(r => (
+                  <button key={r.id} onClick={() => {
+                    const hrs = pendingEntry.hours === 0 ? dh : pendingEntry.hours;
+                    setPendingEntry({ hours: hrs, reason: r.id });
+                  }} style={{
+                    padding:"5px 9px", borderRadius:12, fontSize:11, fontWeight:700,
+                    fontFamily:"inherit", cursor:"pointer", transition:"all 0.15s",
+                    border: pendingEntry.hours > 0 && pendingEntry.reason === r.id ? `2px solid ${M.sageDk}` : `1.5px solid ${M.brown}25`,
+                    background: pendingEntry.hours > 0 && pendingEntry.reason === r.id ? `${M.sage}25` : "transparent", color:M.char,
+                  }}>{r.label}</button>
+                ))}
+              </div>
             ))}
           </div>
 
           <div style={{ textAlign:"center", marginBottom:6 }}>
-            <span style={{ fontSize:28, fontWeight:800, color:selEntry.hours>0 ? M.roseDk : M.sageDk }}>
-              {selEntry.hours}
+            <span style={{ fontSize:28, fontWeight:800, color:pendingEntry.hours>0 ? M.roseDk : M.sageDk }}>
+              {pendingEntry.hours}
             </span>
             <span style={{ fontSize:13, fontWeight:600, color:M.lChar, marginLeft:4 }}>小时缺勤</span>
           </div>
           <div style={{ padding:"0 4px", marginBottom:8 }}>
-            <input type="range" min={0} max={dh} step={0.5} value={selEntry.hours}
-              onChange={e => setEntry(sel, +e.target.value, selEntry.reason)}
+            <input type="range" min={0} max={dh} step={0.5} value={pendingEntry.hours}
+              onChange={e => setPendingEntry(p => ({ ...p, hours: +e.target.value }))}
               style={{ width:"100%", accentColor:M.rose, height:6 }}/>
             <div style={{ display:"flex", justifyContent:"space-between", fontSize:9, color:M.lChar, fontWeight:600, marginTop:2 }}>
               <span>全勤 ✨</span><span>全天消失 🐟</span>
             </div>
           </div>
-          {selEntry.hours > 0 && (
+          {pendingEntry.hours > 0 && (
             <div style={{
               textAlign:"center", fontSize:11, color:M.roseDk, fontWeight:700,
               background:`${M.rose}15`, borderRadius:12, padding:"5px 8px", marginBottom:8, lineHeight:1.5,
             }}>
-              💸 今日踏空: {fmt(selEntry.hours * hrCost)}
-              {selEntry.reason === "sick"             && <><br/><span style={{ fontSize:10, color:M.lChar }}>别忘了 copay 还要再花一笔 😳</span></>}
-              {selEntry.reason === "vacation"         && <><br/><span style={{ fontSize:10, color:M.lChar }}>机票酒店另计，不堪细算 🫠</span></>}
-              {selEntry.reason === "holiday"          && <><br/><span style={{ fontSize:10, color:M.lChar }}>Daycare 放假你不休，谁说的 💔</span></>}
-              {selEntry.reason === "teacher_training" && <><br/><span style={{ fontSize:10, color:M.lChar }}>老师也要充电，你的钱也跟着充进去了 🔌</span></>}
+              💸 今日踏空: {fmt(pendingEntry.hours * hrCost)}
+              {pendingEntry.reason === "sick"             && <><br/><span style={{ fontSize:10, color:M.lChar }}>别忘了 copay 还要再花一笔 😳</span></>}
+              {pendingEntry.reason === "vacation"         && <><br/><span style={{ fontSize:10, color:M.lChar }}>机票酒店另计，不堪细算 🫠</span></>}
+              {pendingEntry.reason === "holiday"          && <><br/><span style={{ fontSize:10, color:M.lChar }}>Daycare 放假你不休，谁说的 💔</span></>}
+              {pendingEntry.reason === "teacher_training" && <><br/><span style={{ fontSize:10, color:M.lChar }}>老师也要充电，你的钱也跟着充进去了 🔌</span></>}
             </div>
           )}
-          <button onClick={() => setSel(null)} style={{
+          <button onClick={confirmEntry} style={{
             width:"100%", padding:"8px 0",
             background:`linear-gradient(135deg,${M.sage},${M.sageDk})`,
             border:"none", borderRadius:14, color:"white", fontSize:13, fontWeight:700,

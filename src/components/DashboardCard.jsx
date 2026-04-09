@@ -2,7 +2,15 @@ import { M } from "../constants";
 import { Face } from "./icons";
 
 export function DashboardCard({ sunk, dailyCost, totalAbsDays, wdays, mood, fmt, getHumor,
-                                viewMode, quarter }) {
+                                viewMode, quarter,
+                                sickDays, vacDays, holidayDays, trainingDays, otherDays }) {
+  const reasonItems = [
+    { icon:"💊", count:sickDays     },
+    { icon:"✈️", count:vacDays      },
+    { icon:"📆", count:holidayDays  },
+    { icon:"💸", count:trainingDays },
+    { icon:"💔", count:otherDays    },
+  ].filter(r => r.count > 0);
   const reportTitle =
     viewMode === "month"   ? "当月份空气质量报告" :
     viewMode === "quarter" ? `Q${quarter + 1} 季度空气质量报告` :
@@ -15,8 +23,6 @@ export function DashboardCard({ sunk, dailyCost, totalAbsDays, wdays, mood, fmt,
     viewMode === "month"   ? "本月全勤，宝宝是 daycare 真模范 🌟" :
     viewMode === "quarter" ? "本季全勤，宝宝季度全勤奖 🏆" :
                              "全年全勤，宝宝年度模范员工 🎖️";
-  const costLabel = "日均费用";
-
   return (
     <div style={{
       background:M.white, borderRadius:28, padding:"20px 20px 16px", margin:"12px 0",
@@ -37,22 +43,39 @@ export function DashboardCard({ sunk, dailyCost, totalAbsDays, wdays, mood, fmt,
         ? <p style={{ fontSize:12, color:M.rose, margin:"6px 0 0", fontWeight:600, lineHeight:1.4 }}>{getHumor(sunk)}</p>
         : <p style={{ fontSize:12, color:M.sage, margin:"6px 0 0", fontWeight:600 }}>{emptyMsg}</p>
       }
+
+      {/* ── Bottom: 3-stat row (horizontal, emoji style) ── */}
       <div style={{
         display:"flex", justifyContent:"center", gap:20, marginTop:14, paddingTop:12,
         borderTop:`1px dashed ${M.brown}30`, flexWrap:"wrap",
       }}>
         {[
-          { l:"缺勤",    v:`${totalAbsDays.toFixed(1)}天`, i:"🏠" },
-          { l:costLabel, v:fmt(dailyCost),                  i:"💰" },
-          { l:"工作日",  v:`${wdays}天`,                    i:"📅" },
-        ].map((x, i) => (
-          <div key={i} style={{ textAlign:"center", minWidth:64 }}>
+          { l:"应入园",  v:`${wdays}天`,                   i:"📅" },
+          { l:"日均学费", v:fmt(dailyCost),                 i:"💰" },
+          { l:"已踏空",  v:`${totalAbsDays.toFixed(1)}天`,  i:"🏠" },
+        ].map((x, idx) => (
+          <div key={idx} style={{ textAlign:"center", minWidth:64 }}>
             <div style={{ fontSize:15 }}>{x.i}</div>
             <div style={{ fontSize:14, fontWeight:800, color:M.char }}>{x.v}</div>
             <div style={{ fontSize:9,  color:M.lChar, fontWeight:600 }}>{x.l}</div>
           </div>
         ))}
       </div>
+
+      {/* ── Reason breakdown strip ── */}
+      {reasonItems.length > 0 && (
+        <div style={{ display:"flex", justifyContent:"center", gap:6, marginTop:8, flexWrap:"wrap" }}>
+          {reasonItems.map((r, i) => (
+            <div key={i} style={{
+              display:"flex", alignItems:"center", gap:3,
+              background:`${M.cream}80`, borderRadius:10, padding:"3px 8px",
+            }}>
+              <span style={{ fontSize:12 }}>{r.icon}</span>
+              <span style={{ fontSize:11, fontWeight:700, color:M.char }}>{r.count}天</span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

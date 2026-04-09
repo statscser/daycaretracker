@@ -1,6 +1,6 @@
 import { M } from "../constants";
 
-export function Ring({ ratio, size = 36, isToday, isEmpty, reason }) {
+export function Ring({ ratio, size = 36, isToday, isEmpty, reason, responsive = false }) {
   const sw = size * 0.18, r = (size - sw) / 2;
   const circ = 2 * Math.PI * r, c = size / 2;
   const f = Math.max(0, Math.min(1, ratio));
@@ -17,7 +17,12 @@ export function Ring({ ratio, size = 36, isToday, isEmpty, reason }) {
   const iconMap = { sick: "💊", vacation: "✈️", holiday: "📆", teacher_training: "💸", other: "💔" };
   const showIcon = f < 1 && reason && iconMap[reason];
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+    <svg
+      viewBox={`0 0 ${size} ${size}`}
+      width={responsive ? "100%" : size}
+      height={responsive ? "100%" : size}
+      style={responsive ? { display:"block" } : undefined}
+    >
       {!isEmpty && <>
         <circle cx={c} cy={c} r={r} fill="none" stroke={`${M.brown}40`} strokeWidth={sw} />
         <circle cx={c} cy={c} r={r} fill="none" stroke={col} strokeWidth={sw}

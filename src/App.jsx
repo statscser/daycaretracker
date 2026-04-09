@@ -6,7 +6,6 @@ import { HeaderSection }    from "./components/HeaderSection";
 import { SegmentedControl } from "./components/SegmentedControl";
 import { SettingsModal }    from "./components/SettingsModal";
 import { DashboardCard }    from "./components/DashboardCard";
-import { AbsencePills }     from "./components/AbsencePills";
 import { CalendarSection }  from "./components/CalendarSection";
 
 export default function App() {
@@ -132,11 +131,8 @@ export default function App() {
         sunk={sunk} dailyCost={dailyCost} totalAbsDays={totalAbsDays}
         wdays={wdays} mood={mood} fmt={fmt} getHumor={getHumor}
         viewMode={viewMode} quarter={quarter}
-      />
-
-      <AbsencePills
         sickDays={sickDays} vacDays={vacDays} holidayDays={holidayDays}
-        trainingDays={trainingDays} otherDays={otherDays} totalAbsHrs={totalAbsHrs}
+        trainingDays={trainingDays} otherDays={otherDays}
       />
 
       <CalendarSection
