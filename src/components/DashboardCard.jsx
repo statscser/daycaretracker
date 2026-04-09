@@ -15,7 +15,7 @@ export function DashboardCard({ sunk, dailyCost, totalAbsDays, wdays, mood, fmt,
     viewMode === "month"   ? "本月全勤，宝宝是 daycare 真模范 🌟" :
     viewMode === "quarter" ? "本季全勤，宝宝季度全勤奖 🏆" :
                              "全年全勤，宝宝年度模范员工 🎖️";
-  const costLabel = viewMode === "month" ? "日费" : "日均费";
+  const costLabel = "日均费用";
 
   return (
     <div style={{

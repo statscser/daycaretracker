@@ -5,6 +5,51 @@ import { getDays, getFirst, getTuitionForMonth, calculatePeriodStats } from "../
 
 const reasonColor = Object.fromEntries(ABSENCE_REASONS.map(r => [r.id, r.color]));
 
+// ─── Pie chart: filled pie where absence reasons are colored slices ────────────
+function PieChart({ wdays, sickDays, vacDays, holidayDays, trainingDays, otherDays, size = 32 }) {
+  const c = size / 2;
+  const R = size * 0.46;      // outer radius
+  const pathR = R / 2;        // stroke-trick: path at R/2, strokeWidth = R fills center→edge
+  const circ = 2 * Math.PI * pathR;
+
+  if (wdays === 0) {
+    return (
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        <circle cx={c} cy={c} r={R} fill={`${M.brown}25`} />
+      </svg>
+    );
+  }
+
+  const slices = [
+    { days: sickDays,     color: M.sickYellow },
+    { days: vacDays,      color: M.mint },
+    { days: holidayDays,  color: M.holiday },
+    { days: trainingDays, color: M.lav },
+    { days: otherDays,    color: M.gray },
+  ].filter(s => s.days > 0);
+
+  let cumulative = 0;
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      {/* Full sage base = attended days */}
+      <circle cx={c} cy={c} r={R} fill={M.sage} />
+      {/* Absence slices drawn on top via thick-stroke arc trick */}
+      {slices.map((s, i) => {
+        const len    = (s.days / wdays) * circ;
+        const offset = -(cumulative / wdays) * circ;
+        cumulative  += s.days;
+        return (
+          <circle key={i} cx={c} cy={c} r={pathR} fill="none"
+            stroke={s.color} strokeWidth={R}
+            strokeDasharray={`${len} ${circ}`}
+            strokeDashoffset={offset}
+            transform={`rotate(-90 ${c} ${c})`} />
+        );
+      })}
+    </svg>
+  );
+}
+
 export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry, setEntry,
                                   isWe, isToday, ratio, onPrev, onNext,
                                   viewMode, quarter,
@@ -54,12 +99,21 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
     boxShadow:`0 8px 32px ${M.brown}12`, border:`1.5px solid ${M.brown}15`, position:"relative",
   };
 
-  // ─── Quarter view: 3 mini dot-grid months ──────────────────────────────────
+  // ─── Quarter view ──────────────────────────────────────────────────────────
   if (viewMode === "quarter") {
     const qMonths = [quarter*3, quarter*3+1, quarter*3+2];
+
+    // Pre-compute per-month stats for the summary strip
+    const qStats = qMonths.map(m => {
+      const tuition = getTuitionForMonth(tuitionHistory, yr, m);
+      return calculatePeriodStats(absences, yr, m, { sh, eh, tuition });
+    });
+
     return (
       <div ref={calRef} style={cardStyle}>
         <NavRow />
+
+        {/* 3 mini dot-grid panels */}
         <div style={{ display:"flex", gap:8 }}>
           {qMonths.map(m => {
             const mDim   = getDays(yr, m);
@@ -67,18 +121,18 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
             const mk     = `${yr}-${m}`;
             return (
               <div key={m} onClick={() => onGoToMonth(m)} style={{
-                flex:1, cursor:"pointer", borderRadius:14, padding:"8px 6px 10px",
+                flex:1, cursor:"pointer", borderRadius:14, padding:"10px 8px 12px",
                 background:`${M.cream}80`, border:`1px solid ${M.brown}15`,
                 transition:"background 0.15s",
               }}
               onMouseEnter={e => e.currentTarget.style.background = `${M.sage}20`}
               onMouseLeave={e => e.currentTarget.style.background = `${M.cream}80`}
               >
-                <div style={{ textAlign:"center", fontSize:11, fontWeight:800, color:M.char, marginBottom:5 }}>
+                <div style={{ textAlign:"center", fontSize:11, fontWeight:800, color:M.char, marginBottom:6 }}>
                   {MONTHS_CN[m]}
                 </div>
-                {/* Mini weekday header — single character */}
-                <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:1, marginBottom:2 }}>
+                {/* Mini weekday header */}
+                <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:1, marginBottom:3 }}>
                   {["日","一","二","三","四","五","六"].map((wd, i) => (
                     <div key={wd} style={{
                       textAlign:"center", fontSize:6, fontWeight:700,
@@ -87,7 +141,7 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
                   ))}
                 </div>
                 {/* Dot grid */}
-                <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:1.5 }}>
+                <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:2 }}>
                   {Array.from({ length: mFirst }).map((_, i) => (
                     <div key={`e${i}`} style={{ aspectRatio:"1" }} />
                   ))}
@@ -97,9 +151,9 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
                     const entry  = absences[`${mk}-${d}`];
                     const hasAbs = entry && entry.hours > 0;
                     let dotColor;
-                    if (isWknd)    dotColor = `${M.brown}22`;
+                    if (isWknd)       dotColor = `${M.brown}22`;
                     else if (!hasAbs) dotColor = `${M.sage}80`;
-                    else           dotColor = reasonColor[entry.reason] || M.rose;
+                    else              dotColor = reasonColor[entry.reason] || M.rose;
                     return (
                       <div key={d} style={{
                         aspectRatio:"1", borderRadius:3,
@@ -113,64 +167,51 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
             );
           })}
         </div>
-        {/* Dot legend */}
-        <div style={{ display:"flex", gap:8, justifyContent:"center", marginTop:10, flexWrap:"wrap" }}>
-          <div style={{ display:"flex", alignItems:"center", gap:3 }}>
-            <div style={{ width:8, height:8, borderRadius:2, background:`${M.sage}80` }}/>
-            <span style={{ fontSize:9, color:M.lChar, fontWeight:600 }}>全勤</span>
-          </div>
-          {ABSENCE_REASONS.map(r => (
-            <div key={r.id} style={{ display:"flex", alignItems:"center", gap:3 }}>
-              <div style={{ width:8, height:8, borderRadius:2, background:r.color }}/>
-              <span style={{ fontSize:9, color:M.lChar, fontWeight:600 }}>{r.label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
 
-  // ─── Year view: 12 month summary cards ────────────────────────────────────
-  if (viewMode === "year") {
-    const now2 = new Date();
-    return (
-      <div ref={calRef} style={cardStyle}>
-        <NavRow />
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:6 }}>
-          {Array.from({ length: 12 }, (_, m) => {
-            const tuition  = getTuitionForMonth(tuitionHistory, yr, m);
-            const s        = calculatePeriodStats(absences, yr, m, { sh, eh, tuition });
-            const absRatio = s.wdays > 0 ? Math.min(1, s.totalAbsDays / s.wdays) : 0;
-            const isCurMo  = yr === now2.getFullYear() && m === now2.getMonth();
-            // Dominant reason for ring color
-            const domReason =
-              s.sickDays     > 0 ? "sick"             :
-              s.vacDays      > 0 ? "vacation"         :
-              s.holidayDays  > 0 ? "holiday"          :
-              s.trainingDays > 0 ? "teacher_training" :
-              s.otherDays    > 0 ? "other"            : null;
+        {/* Summary strip — per-month stats */}
+        <div style={{ display:"flex", gap:8, marginTop:10 }}>
+          {qMonths.map((m, qi) => {
+            const s = qStats[qi];
+            const reasonPills = ABSENCE_REASONS
+              .map(r => ({
+                icon: r.icon,
+                color: r.color,
+                count: r.id === "sick"             ? s.sickDays     :
+                       r.id === "vacation"         ? s.vacDays      :
+                       r.id === "holiday"          ? s.holidayDays  :
+                       r.id === "teacher_training" ? s.trainingDays :
+                                                     s.otherDays,
+              }))
+              .filter(p => p.count > 0);
             return (
-              <div key={m} onClick={() => onGoToMonth(m)} style={{
-                borderRadius:14, padding:"8px 4px 7px", textAlign:"center",
-                background: isCurMo ? `${M.sage}20` : `${M.cream}60`,
-                border: isCurMo
-                  ? `1.5px solid ${M.sage}60`
-                  : `1px solid ${M.brown}15`,
-                cursor:"pointer", transition:"background 0.15s",
-              }}
-              onMouseEnter={e => e.currentTarget.style.background = `${M.lav}30`}
-              onMouseLeave={e => e.currentTarget.style.background = isCurMo ? `${M.sage}20` : `${M.cream}60`}
-              >
-                <div style={{ fontSize:10, fontWeight:800, color:M.char, marginBottom:3 }}>
-                  {MONTHS_CN[m]}
-                </div>
-                <div style={{ display:"flex", justifyContent:"center", marginBottom:3 }}>
-                  <Ring ratio={1 - absRatio} size={28} reason={domReason} isEmpty={false} />
-                </div>
-                <div style={{ fontSize:9, fontWeight:700, lineHeight:1.3,
+              <div key={m} style={{
+                flex:1, borderRadius:12, padding:"8px 6px",
+                background:`${M.cream}50`, border:`1px solid ${M.brown}12`,
+                textAlign:"center",
+              }}>
+                {/* Loss */}
+                <div style={{ fontSize:13, fontWeight:800, lineHeight:1.2,
                   color: s.sunk > 0 ? M.roseDk : M.sageDk }}>
-                  {s.sunk > 0 ? fmt(s.sunk) : "全勤 ✨"}
+                  {s.sunk > 0 ? fmt(s.sunk) : "✨"}
                 </div>
+                {/* Absence days */}
+                <div style={{ fontSize:9, color:M.lChar, fontWeight:600, margin:"2px 0 4px" }}>
+                  {s.sunk > 0
+                    ? `${s.totalAbsDays.toFixed(1)} 天缺勤`
+                    : "全勤"}
+                </div>
+                {/* Reason pills */}
+                {reasonPills.length > 0 && (
+                  <div style={{ display:"flex", gap:3, justifyContent:"center", flexWrap:"wrap" }}>
+                    {reasonPills.map((p, i) => (
+                      <span key={i} style={{
+                        fontSize:9, fontWeight:700, padding:"2px 5px",
+                        borderRadius:8, background:`${p.color}40`,
+                        color:M.char, lineHeight:1.4,
+                      }}>{p.icon}×{p.count}</span>
+                    ))}
+                  </div>
+                )}
               </div>
             );
           })}
@@ -179,7 +220,56 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
     );
   }
 
-  // ─── Month view (unchanged) ────────────────────────────────────────────────
+  // ─── Year view: 12 month cards with pie chart ──────────────────────────────
+  if (viewMode === "year") {
+    const now2 = new Date();
+    return (
+      <div ref={calRef} style={cardStyle}>
+        <NavRow />
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:6 }}>
+          {Array.from({ length: 12 }, (_, m) => {
+            const tuition = getTuitionForMonth(tuitionHistory, yr, m);
+            const s       = calculatePeriodStats(absences, yr, m, { sh, eh, tuition });
+            const isCurMo = yr === now2.getFullYear() && m === now2.getMonth();
+            return (
+              <div key={m} onClick={() => onGoToMonth(m)} style={{
+                borderRadius:14, padding:"8px 4px 8px", textAlign:"center",
+                background: isCurMo ? `${M.sage}20` : `${M.cream}60`,
+                border: isCurMo ? `1.5px solid ${M.sage}60` : `1px solid ${M.brown}15`,
+                cursor:"pointer", transition:"background 0.15s",
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = `${M.lav}30`}
+              onMouseLeave={e => e.currentTarget.style.background = isCurMo ? `${M.sage}20` : `${M.cream}60`}
+              >
+                <div style={{ fontSize:10, fontWeight:800, color:M.char, marginBottom:4 }}>
+                  {MONTHS_CN[m]}
+                </div>
+                <div style={{ display:"flex", justifyContent:"center", marginBottom:4 }}>
+                  <PieChart size={34}
+                    wdays={s.wdays}
+                    sickDays={s.sickDays}       vacDays={s.vacDays}
+                    holidayDays={s.holidayDays} trainingDays={s.trainingDays}
+                    otherDays={s.otherDays} />
+                </div>
+                {s.sunk > 0 ? <>
+                  <div style={{ fontSize:10, fontWeight:800, color:M.roseDk, lineHeight:1.2 }}>
+                    {fmt(s.sunk)}
+                  </div>
+                  <div style={{ fontSize:9, color:M.lChar, fontWeight:600, marginTop:1 }}>
+                    缺勤 {s.totalAbsDays.toFixed(0)} 天
+                  </div>
+                </> : (
+                  <div style={{ fontSize:9, fontWeight:700, color:M.sageDk }}>✨ 全勤</div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  // ─── Month view ────────────────────────────────────────────────────────────
   return (
     <div ref={calRef} style={cardStyle}>
       {/* Navigation row */}
