@@ -30,34 +30,29 @@
   <!-- ═══ PIG (doodle style, wobble filter applied) ═══════════════════════ -->
   <g filter="url(#wobble)">
     <!-- Ears drawn BEFORE head so head overlaps base -->
-    <ellipse cx="120" cy="148" rx="50" ry="64" fill="#C08585"/>
-    <ellipse cx="120" cy="148" rx="30" ry="40" fill="#D4A5A5"/>
-    <ellipse cx="360" cy="148" rx="50" ry="64" fill="#C08585"/>
-    <ellipse cx="360" cy="148" rx="30" ry="40" fill="#D4A5A5"/>
+    <ellipse cx="120" cy="148" rx="50" ry="64" fill="#DBAABB"/>
+    <ellipse cx="120" cy="148" rx="30" ry="40" fill="#F0DADA"/>
+    <ellipse cx="360" cy="148" rx="50" ry="64" fill="#DBAABB"/>
+    <ellipse cx="360" cy="148" rx="30" ry="40" fill="#F0DADA"/>
 
     <!-- Head -->
-    <circle cx="240" cy="278" r="164" fill="#D4A5A5"/>
+    <circle cx="240" cy="278" r="164" fill="#F0DADA"/>
 
     <!-- Big rosy cheeks -->
-    <ellipse cx="134" cy="304" rx="46" ry="34" fill="#C08585" opacity="0.52"/>
-    <ellipse cx="346" cy="304" rx="46" ry="34" fill="#C08585" opacity="0.52"/>
+    <ellipse cx="134" cy="304" rx="46" ry="34" fill="#DBAABB" opacity="0.52"/>
+    <ellipse cx="346" cy="304" rx="46" ry="34" fill="#DBAABB" opacity="0.52"/>
 
     <!-- Snout -->
-    <ellipse cx="240" cy="342" rx="70" ry="52" fill="#C08585"/>
-    <circle cx="217" cy="347" r="15" fill="#A07070"/>
-    <circle cx="263" cy="347" r="15" fill="#A07070"/>
+    <ellipse cx="240" cy="342" rx="70" ry="52" fill="#DBAABB"/>
+    <circle cx="217" cy="347" r="15" fill="#BB8888"/>
+    <circle cx="263" cy="347" r="15" fill="#BB8888"/>
 
-    <!-- Squinty baby eyes (curved upward = happy squint) -->
-    <path d="M183 244 Q198 228 213 244" stroke="#4A4543" stroke-width="8.5" fill="none" stroke-linecap="round"/>
-    <path d="M267 244 Q282 228 297 244" stroke="#4A4543" stroke-width="8.5" fill="none" stroke-linecap="round"/>
+    <!-- Squinty baby eyes (curved upward = happy squint) — thicker + wider for visibility -->
+    <path d="M172 248 Q196 224 220 248" stroke="#4A4543" stroke-width="13" fill="none" stroke-linecap="round"/>
+    <path d="M260 248 Q284 224 308 248" stroke="#4A4543" stroke-width="13" fill="none" stroke-linecap="round"/>
 
     <!-- Coin slot -->
-    <rect x="226" y="118" width="30" height="11" rx="5.5" fill="#B08080"/>
-
-    <!-- Crack + break lines at bottom -->
-    <polyline points="212,432 225,450 238,437 252,452 265,437" stroke="#A07070" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-    <line x1="220" y1="440" x2="208" y2="449" stroke="#A07070" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
-    <line x1="258" y1="445" x2="270" y2="454" stroke="#A07070" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+    <rect x="226" y="118" width="30" height="11" rx="5.5" fill="#BB9999"/>
   </g>
 
   <!-- ═══ COIN 1 — largest, lower-right ════════════════════════════════════ -->
