@@ -1,4 +1,5 @@
 import { M } from "../constants";
+import iconUrl from "../assets/icon.svg";
 
 export function HeaderSection({ onSettingsClick }) {
   return (
@@ -9,12 +10,14 @@ export function HeaderSection({ onSettingsClick }) {
         width:36, height:36, display:"flex", alignItems:"center", justifyContent:"center",
         cursor:"pointer", fontSize:18, lineHeight:1,
       }}>⚙️</button>
-      <div style={{ fontSize:28, marginBottom:2 }}>👶💸</div>
-      <h1 style={{
-        fontSize:22, fontWeight:800, margin:0, letterSpacing:-0.5,
-        background:`linear-gradient(135deg,${M.char},${M.lChar})`,
-        WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent",
-      }}>宝宝碎钞机</h1>
+      <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:8, marginBottom:2 }}>
+        <img src={iconUrl} alt="" width={36} height={36} style={{ display:"block" }} />
+        <h1 style={{
+          fontSize:22, fontWeight:800, margin:0, letterSpacing:-0.5,
+          background:`linear-gradient(135deg,${M.char},${M.lChar})`,
+          WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent",
+        }}>宝宝碎钞机</h1>
+      </div>
     </div>
   );
 }

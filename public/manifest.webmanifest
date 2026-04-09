@@ -1,0 +1,17 @@
+{
+  "name": "宝宝碎钞机",
+  "short_name": "碎钞机",
+  "description": "Daycare 空气质量追踪器",
+  "icons": [
+    {
+      "src": "/src/assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "theme_color": "#F5F0E8",
+  "background_color": "#F5F0E8",
+  "display": "standalone",
+  "start_url": "/"
+}
