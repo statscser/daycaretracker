@@ -18,7 +18,7 @@ export function Ring({ ratio, size = 36, isToday, isEmpty, reason, responsive = 
   const showIcon = f < 1 && reason && iconMap[reason];
   return (
     <svg
-      viewBox={`0 0 ${size} ${size}`}
+      viewBox={`-3 -3 ${size + 6} ${size + 6}`}
       width={responsive ? "100%" : size}
       height={responsive ? "100%" : size}
       style={responsive ? { display:"block" } : undefined}

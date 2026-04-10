@@ -362,7 +362,7 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
               borderRadius:14, position:"relative", transition:"all 0.15s",
               background: sel === d ? `${M.lav}25` : "transparent",
               opacity: we ? 0.4 : 1,
-              overflow:"hidden", minWidth:0,
+              overflow:"visible", minWidth:0,
             }}>
               {/* Ring fills 80% of the cell width so it never overflows */}
               <div style={{ width:"80%", aspectRatio:"1" }}>

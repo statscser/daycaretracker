@@ -182,10 +182,10 @@ export default function App() {
         <p style={{ margin:"10px 0 0", fontSize:10, color:`${M.lChar}77` }}>
           有建议或报错？请告诉我！&nbsp;
           <a href="https://xhslink.com/m/A11u8iECHmb" target="_blank" rel="noopener noreferrer"
-            style={{ color:M.lChar,extDecoration:"none", fontWeight:600}}>小红书</a>
+            style={{ color:M.roseDk, textDecoration:"underline", fontWeight:600 }}>小红书</a>
           {" · "}
           <a href="mailto:miniappbygrace@gmail.com"
-            style={{ color:M.lChar, textDecoration:"none", fontWeight:600}}>邮箱</a>
+            style={{ color:M.roseDk, textDecoration:"underline", fontWeight:600 }}>邮箱</a>
         </p>
       </div>
     </div>
