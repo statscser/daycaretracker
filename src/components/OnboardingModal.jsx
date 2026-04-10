@@ -23,32 +23,27 @@ export function OnboardingModal({ onSave }) {
   };
 
   return (
-    <>
-      {/* Non-dismissible backdrop */}
+    // Backdrop doubles as flex centering container — no transform/calc needed
+    <div style={{
+      position:"fixed", top:0, left:0, right:0, bottom:0,
+      background:`${M.cream}e0`,
+      backdropFilter:"blur(10px)", WebkitBackdropFilter:"blur(10px)",
+      zIndex:200,
+      display:"flex", alignItems:"center", justifyContent:"center",
+      padding:"20px", boxSizing:"border-box",
+    }}>
       <div style={{
-        position:"fixed", top:0, left:0, right:0, bottom:0,
-        background:`${M.cream}e0`,
-        backdropFilter:"blur(10px)", WebkitBackdropFilter:"blur(10px)",
-        zIndex:200,
-      }}/>
-
-      {/* Modal — vertically centered, safe-area aware */}
-      <div style={{
-        position:"fixed",
-        top:"50%", left:"50%",
-        transform:"translate(-50%, -50%)",
-        width:"calc(100% - 40px)", maxWidth:400,
+        width:"100%", maxWidth:400,
         background:M.white, borderRadius:28,
         padding:"28px 22px 24px",
         boxShadow:`0 20px 60px rgba(0,0,0,0.15), 0 0 0 1.5px ${M.brown}20`,
-        zIndex:210,
-        maxHeight:"88vh", overflowY:"auto",
+        maxHeight:"calc(100vh - 40px)", overflowY:"auto",
         WebkitOverflowScrolling:"touch",
       }}>
 
         {/* Welcome header */}
         <div style={{ textAlign:"center", marginBottom:22 }}>
-          <div style={{ fontSize:40, lineHeight:1, marginBottom:10 }}>🍼</div>
+          <img src="/icon.svg" alt="icon" style={{ width:72, height:72, marginBottom:10 }} />
           <h2 style={{ margin:0, fontSize:17, fontWeight:800, color:M.char, lineHeight:1.4 }}>
             Hi，欢迎使用宝宝碎钞机！
           </h2>
@@ -158,6 +153,6 @@ export function OnboardingModal({ onSave }) {
           🔒 所有数据仅存储在您的设备本地，不会上传至任何服务器
         </p>
       </div>
-    </>
+    </div>
   );
 }
