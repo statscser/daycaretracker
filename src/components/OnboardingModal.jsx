@@ -95,7 +95,7 @@ export function OnboardingModal({ onSave }) {
         </div>
 
         {/* Start date */}
-        <div style={{ marginBottom:16 }}>
+        <div style={{ marginBottom:16, overflow:"hidden" }}>
           <label style={{ fontSize:12, fontWeight:700, color:M.lChar, display:"block", marginBottom:6 }}>
             📅 入园起始日期
           </label>
@@ -103,7 +103,7 @@ export function OnboardingModal({ onSave }) {
             type="date" value={startDate}
             onChange={e => setStartDate(e.target.value)}
             style={{
-              width:"100%", boxSizing:"border-box", padding:"10px 14px",
+              width:"100%", minWidth:0, boxSizing:"border-box", padding:"10px 14px",
               borderRadius:14, border:`1.5px solid ${M.brown}40`,
               fontSize:14, fontFamily:"inherit", fontWeight:600,
               background:M.white, color:M.char, outline:"none",
