@@ -63,3 +63,7 @@ export function isFirstTime() {
     return true;
   } catch { return false; }
 }
+
+const PRIVACY_KEY = "dc_privacy_ok";
+export const isPrivacySeen  = () => { try { return localStorage.getItem(PRIVACY_KEY) !== null; } catch { return true; } };
+export const markPrivacySeen = () => { try { localStorage.setItem(PRIVACY_KEY, "1"); } catch { /* ignore */ } };

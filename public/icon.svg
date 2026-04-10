@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <!-- Hand-drawn wobble filter for pig -->
+    <filter id="wobble" x="-12%" y="-12%" width="124%" height="124%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.022" numOctaves="4" seed="5" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="6" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+
+    <!-- 3D coin face: metallic radial gradient -->
+    <radialGradient id="coinGrad" cx="32%" cy="28%" r="72%">
+      <stop offset="0%"   stop-color="#FFFCEE"/>
+      <stop offset="30%"  stop-color="#F0E4C4"/>
+      <stop offset="68%"  stop-color="#D4C090"/>
+      <stop offset="100%" stop-color="#A8864A"/>
+    </radialGradient>
+
+    <!-- Wing gradient: sage, feathery fade -->
+    <linearGradient id="wingGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#B5C4B1" stop-opacity="0.75"/>
+      <stop offset="60%"  stop-color="#B5C4B1" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#B5C4B1" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="wingGradR" x1="100%" y1="0%" x2="0%" y2="0%">
+      <stop offset="0%"   stop-color="#B5C4B1" stop-opacity="0.75"/>
+      <stop offset="60%"  stop-color="#B5C4B1" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#B5C4B1" stop-opacity="0.05"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ═══ PIG (doodle style, wobble filter applied) ═══════════════════════ -->
+  <g filter="url(#wobble)">
+    <!-- Ears drawn BEFORE head so head overlaps base -->
+    <ellipse cx="120" cy="148" rx="50" ry="64" fill="#DBAABB"/>
+    <ellipse cx="120" cy="148" rx="30" ry="40" fill="#F0DADA"/>
+    <ellipse cx="360" cy="148" rx="50" ry="64" fill="#DBAABB"/>
+    <ellipse cx="360" cy="148" rx="30" ry="40" fill="#F0DADA"/>
+
+    <!-- Head -->
+    <circle cx="240" cy="278" r="164" fill="#F0DADA"/>
+
+    <!-- Big rosy cheeks -->
+    <ellipse cx="134" cy="304" rx="46" ry="34" fill="#DBAABB" opacity="0.52"/>
+    <ellipse cx="346" cy="304" rx="46" ry="34" fill="#DBAABB" opacity="0.52"/>
+
+    <!-- Snout -->
+    <ellipse cx="240" cy="342" rx="70" ry="52" fill="#DBAABB"/>
+    <circle cx="217" cy="347" r="15" fill="#BB8888"/>
+    <circle cx="263" cy="347" r="15" fill="#BB8888"/>
+
+    <!-- Squinty baby eyes (curved upward = happy squint) — thicker + wider for visibility -->
+    <path d="M172 248 Q196 224 220 248" stroke="#4A4543" stroke-width="13" fill="none" stroke-linecap="round"/>
+    <path d="M260 248 Q284 224 308 248" stroke="#4A4543" stroke-width="13" fill="none" stroke-linecap="round"/>
+
+    <!-- Coin slot -->
+    <rect x="226" y="118" width="30" height="11" rx="5.5" fill="#BB9999"/>
+  </g>
+
+  <!-- ═══ COIN 1 — largest, lower-right ════════════════════════════════════ -->
+  <g transform="translate(390,340) rotate(-22)">
+    <!-- Shadow depth -->
+    <circle cx="4" cy="6" r="54" fill="#7A5C28" opacity="0.22"/>
+    <!-- Coin face -->
+    <circle cx="0" cy="0" r="54" fill="url(#coinGrad)"/>
+    <!-- Outer rim -->
+    <circle cx="0" cy="0" r="54" fill="none" stroke="#B8943A" stroke-width="4.5"/>
+    <!-- Inner reeded edge -->
+    <circle cx="0" cy="0" r="47" fill="none" stroke="#E8D49A" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.8"/>
+    <!-- Symbol -->
+    <text x="0" y="13" text-anchor="middle" font-size="42" fill="#7A5C28" font-family="Georgia,serif" font-weight="bold" opacity="0.85">¥</text>
+    <!-- Specular highlight -->
+    <ellipse cx="-16" cy="-20" rx="18" ry="11" fill="white" opacity="0.28" transform="rotate(-20)"/>
+    <!-- Left wing -->
+    <path d="M-54,-8 Q-102,-62 -54,-86 Q-28,-48 -54,-8Z" fill="url(#wingGradR)"/>
+    <path d="M-54,-8 Q-88,-32 -72,-62 Q-44,-38 -54,-8Z" fill="#B5C4B1" opacity="0.28"/>
+    <!-- Right wing -->
+    <path d="M54,-8 Q102,-62 54,-86 Q28,-48 54,-8Z" fill="url(#wingGrad)"/>
+    <path d="M54,-8 Q88,-32 72,-62 Q44,-38 54,-8Z" fill="#B5C4B1" opacity="0.28"/>
+  </g>
+
+  <!-- ═══ COIN 2 — medium, upper-right ═════════════════════════════════════ -->
+  <g transform="translate(430,195) rotate(18)">
+    <circle cx="3" cy="5" r="43" fill="#7A5C28" opacity="0.2"/>
+    <circle cx="0" cy="0" r="43" fill="url(#coinGrad)"/>
+    <circle cx="0" cy="0" r="43" fill="none" stroke="#B8943A" stroke-width="4"/>
+    <circle cx="0" cy="0" r="37" fill="none" stroke="#E8D49A" stroke-width="1.5" stroke-dasharray="3.5 2.5" opacity="0.8"/>
+    <text x="0" y="11" text-anchor="middle" font-size="33" fill="#7A5C28" font-family="Georgia,serif" font-weight="bold" opacity="0.85">¥</text>
+    <ellipse cx="-13" cy="-16" rx="14" ry="9" fill="white" opacity="0.28" transform="rotate(-20)"/>
+    <path d="M-43,-7 Q-82,-50 -43,-70 Q-22,-39 -43,-7Z" fill="url(#wingGradR)"/>
+    <path d="M-43,-7 Q-70,-26 -58,-50 Q-35,-31 -43,-7Z" fill="#B5C4B1" opacity="0.25"/>
+    <path d="M43,-7 Q82,-50 43,-70 Q22,-39 43,-7Z" fill="url(#wingGrad)"/>
+    <path d="M43,-7 Q70,-26 58,-50 Q35,-31 43,-7Z" fill="#B5C4B1" opacity="0.25"/>
+  </g>
+
+  <!-- ═══ COIN 3 — smallest, topmost ════════════════════════════════════════ -->
+  <g transform="translate(352,88) rotate(-8)">
+    <circle cx="2.5" cy="4" r="33" fill="#7A5C28" opacity="0.18"/>
+    <circle cx="0" cy="0" r="33" fill="url(#coinGrad)"/>
+    <circle cx="0" cy="0" r="33" fill="none" stroke="#B8943A" stroke-width="3.5"/>
+    <circle cx="0" cy="0" r="28" fill="none" stroke="#E8D49A" stroke-width="1" stroke-dasharray="3 2" opacity="0.8"/>
+    <text x="0" y="8" text-anchor="middle" font-size="25" fill="#7A5C28" font-family="Georgia,serif" font-weight="bold" opacity="0.85">¥</text>
+    <ellipse cx="-10" cy="-12" rx="11" ry="7" fill="white" opacity="0.28" transform="rotate(-20)"/>
+    <path d="M-33,-5 Q-62,-38 -33,-54 Q-17,-30 -33,-5Z" fill="url(#wingGradR)"/>
+    <path d="M-33,-5 Q-54,-20 -44,-38 Q-27,-24 -33,-5Z" fill="#B5C4B1" opacity="0.22"/>
+    <path d="M33,-5 Q62,-38 33,-54 Q17,-30 33,-5Z" fill="url(#wingGrad)"/>
+    <path d="M33,-5 Q54,-20 44,-38 Q27,-24 33,-5Z" fill="#B5C4B1" opacity="0.22"/>
+  </g>
+
+</svg>

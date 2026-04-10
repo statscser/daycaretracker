@@ -168,6 +168,10 @@ export function SettingsModal({ settings, tuitionHistory, onUpdateSettings, onUp
           border:"none", borderRadius:16, color:"white", fontSize:14, fontWeight:700,
           cursor:"pointer", fontFamily:"inherit", boxShadow:`0 4px 12px ${M.sage}40`,
         }}>设置完毕 ✓</button>
+
+        <p style={{ textAlign:"center", margin:"12px 0 0", fontSize:10, color:`${M.lChar}77`, fontWeight:500, lineHeight:1.5 }}>
+          🔒 所有数据仅存储在您的设备本地，不会上传任何服务器
+        </p>
       </div>
     </>
   );

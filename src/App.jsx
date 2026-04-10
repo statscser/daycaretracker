@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { M, CURRENCIES, HUMOR_MAP, HUMOR_DEFAULT, ABSENCE_REASONS } from "./constants";
-import { loadData, saveData, isFirstTime } from "./lib/storage";
+import { loadData, saveData, isFirstTime, isPrivacySeen, markPrivacySeen } from "./lib/storage";
 import { getDays, getFirst, getTuitionForMonth, calculatePeriodStats, aggregateStats } from "./lib/stats";
 import { HeaderSection }    from "./components/HeaderSection";
 import { SegmentedControl } from "./components/SegmentedControl";
@@ -8,6 +8,7 @@ import { SettingsModal }    from "./components/SettingsModal";
 import { DashboardCard }    from "./components/DashboardCard";
 import { CalendarSection }  from "./components/CalendarSection";
 import { OnboardingModal }  from "./components/OnboardingModal";
+import { PrivacyModal }     from "./components/PrivacyModal";
 
 export default function App() {
   const now = new Date();
@@ -16,7 +17,9 @@ export default function App() {
   const [viewMode, setViewMode] = useState("month");
   const [data,     setData]     = useState(() => loadData());
   const [setup,    setSetup]    = useState(false);
-  const [needsSetup, setNeedsSetup] = useState(() => isFirstTime());
+  const [needsSetup,   setNeedsSetup]   = useState(() => isFirstTime());
+  // Show privacy notice once for existing users (new users see it embedded in onboarding)
+  const [needsPrivacy, setNeedsPrivacy] = useState(() => !isFirstTime() && !isPrivacySeen());
   const [humorIdx, setHumorIdx] = useState(0);
 
   // Persist unified data object on every change
@@ -127,6 +130,10 @@ export default function App() {
         <OnboardingModal onSave={handleOnboardingSave} />
       )}
 
+      {needsPrivacy && (
+        <PrivacyModal onDismiss={() => { markPrivacySeen(); setNeedsPrivacy(false); }} />
+      )}
+
       {setup && (
         <SettingsModal
           settings={settings}
@@ -172,6 +179,14 @@ export default function App() {
       <div style={{ textAlign:"center", marginTop:20, fontSize:10, color:`${M.lChar}88`, fontWeight:600, lineHeight:1.6 }}>
         <p style={{ margin:0 }}>「养娃就是一场看不到尽头的天使投资」</p>
         <p style={{ margin:"2px 0 0", fontSize:9 }}>—— 致每一位含泪续费的爸妈</p>
+        <p style={{ margin:"10px 0 0", fontSize:10, color:`${M.lChar}77` }}>
+          有建议或报错？请告诉我！&nbsp;
+          <a href="https://xhslink.com/m/A11u8iECHmb" target="_blank" rel="noopener noreferrer"
+            style={{ color:M.lChar,extDecoration:"none", fontWeight:600}}>小红书</a>
+          {" · "}
+          <a href="mailto:miniappbygrace@gmail.com"
+            style={{ color:M.lChar, textDecoration:"none", fontWeight:600}}>邮箱</a>
+        </p>
       </div>
     </div>
   );

@@ -4,7 +4,7 @@
   "description": "Daycare 空气质量追踪器",
   "icons": [
     {
-      "src": "/src/assets/icon.svg",
+      "src": "/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"

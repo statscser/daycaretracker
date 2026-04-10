@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { M, CURRENCIES } from "../constants";
+import { markPrivacySeen } from "../lib/storage";
 
 export function OnboardingModal({ onSave }) {
   const today = new Date().toISOString().slice(0, 10);
@@ -14,6 +15,7 @@ export function OnboardingModal({ onSave }) {
 
   const handleSave = () => {
     if (!amount || Number(amount) <= 0) { setAmountErr(true); return; }
+    markPrivacySeen();
     onSave({
       settings:       { currency, sh, eh },
       tuitionHistory: [{ startDate, amount: Number(amount) }],
@@ -151,6 +153,9 @@ export function OnboardingModal({ onSave }) {
 
         <p style={{ textAlign:"center", margin:"12px 0 0", fontSize:10, color:`${M.lChar}88`, fontWeight:600 }}>
           这些设置之后随时可以改，放心填！
+        </p>
+        <p style={{ textAlign:"center", margin:"8px 0 0", fontSize:10, color:`${M.lChar}66`, fontWeight:500, lineHeight:1.5 }}>
+          🔒 所有数据仅存储在您的设备本地，不会上传至任何服务器
         </p>
       </div>
     </>
