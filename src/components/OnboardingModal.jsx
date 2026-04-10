@@ -155,7 +155,7 @@ export function OnboardingModal({ onSave }) {
           boxShadow:`0 4px 16px ${M.sage}50`,
           letterSpacing:0.3,
         }}>
-          开始记账 ✨
+          开始碎钞 ✨
         </button>
 
         <p style={{ textAlign:"center", margin:"12px 0 0", fontSize:10, color:`${M.lChar}88`, fontWeight:600 }}>
