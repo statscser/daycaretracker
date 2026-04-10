@@ -108,12 +108,24 @@ export function SettingsModal({ settings, tuitionHistory, onUpdateSettings, onUp
               <div style={{ display:"flex", flexDirection:"column", gap:8, marginBottom:8 }}>
                 <div>
                   <label style={{ fontSize:10, fontWeight:700, color:M.lChar, display:"block", marginBottom:4 }}>起始日期</label>
-                  <input type="date" value={newStart} onChange={e => setNewStart(e.target.value)} style={{
-                    width:"100%", minWidth:0, boxSizing:"border-box", padding:"7px 10px", borderRadius:10,
-                    border:`1.5px solid ${M.brown}40`, fontSize:13, fontFamily:"inherit",
-                    background:M.white, color:M.char, outline:"none",
-                    WebkitAppearance:"none", appearance:"none",
-                  }}/>
+                  <div style={{ position:"relative" }}>
+                    <input type="date" value={newStart} onChange={e => setNewStart(e.target.value)} style={{
+                      width:"100%", minWidth:0, boxSizing:"border-box",
+                      padding:"7px 32px 7px 10px",
+                      borderRadius:10, border:`1.5px solid ${M.brown}40`,
+                      fontSize:13, fontFamily:"inherit",
+                      minHeight:36,
+                      background:M.white, color:M.char, outline:"none",
+                      WebkitAppearance:"none", appearance:"none",
+                    }}/>
+                    <span style={{ position:"absolute", right:9, top:"50%", transform:"translateY(-50%)", pointerEvents:"none", lineHeight:1 }}>
+                      <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                        <rect x="1" y="3" width="14" height="12" rx="2" stroke={M.lChar} strokeWidth="1.5"/>
+                        <path d="M1 7h14" stroke={M.lChar} strokeWidth="1.5"/>
+                        <path d="M5 1v3M11 1v3" stroke={M.lChar} strokeWidth="1.5" strokeLinecap="round"/>
+                      </svg>
+                    </span>
+                  </div>
                 </div>
                 <div>
                   <label style={{ fontSize:10, fontWeight:700, color:M.lChar, display:"block", marginBottom:4 }}>

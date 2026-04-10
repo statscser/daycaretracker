@@ -99,17 +99,28 @@ export function OnboardingModal({ onSave }) {
           <label style={{ fontSize:12, fontWeight:700, color:M.lChar, display:"block", marginBottom:6 }}>
             📅 入园起始日期
           </label>
-          <input
-            type="date" value={startDate}
-            onChange={e => setStartDate(e.target.value)}
-            style={{
-              width:"100%", minWidth:0, boxSizing:"border-box", padding:"10px 14px",
-              borderRadius:14, border:`1.5px solid ${M.brown}40`,
-              fontSize:14, fontFamily:"inherit", fontWeight:600,
-              background:M.white, color:M.char, outline:"none",
-              WebkitAppearance:"none", appearance:"none",
-            }}
-          />
+          <div style={{ position:"relative" }}>
+            <input
+              type="date" value={startDate}
+              onChange={e => setStartDate(e.target.value)}
+              style={{
+                width:"100%", minWidth:0, boxSizing:"border-box",
+                padding:"10px 40px 10px 14px",
+                borderRadius:14, border:`1.5px solid ${M.brown}40`,
+                fontSize:14, fontFamily:"inherit", fontWeight:600,
+                minHeight:44,
+                background:M.white, color:M.char, outline:"none",
+                WebkitAppearance:"none", appearance:"none",
+              }}
+            />
+            <span style={{ position:"absolute", right:12, top:"50%", transform:"translateY(-50%)", pointerEvents:"none", lineHeight:1 }}>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <rect x="1" y="3" width="14" height="12" rx="2" stroke={M.lChar} strokeWidth="1.5"/>
+                <path d="M1 7h14" stroke={M.lChar} strokeWidth="1.5"/>
+                <path d="M5 1v3M11 1v3" stroke={M.lChar} strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+            </span>
+          </div>
         </div>
 
         {/* Drop-off / Pick-up */}
