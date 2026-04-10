@@ -62,11 +62,13 @@ export default function App() {
 
   const getHumor = useCallback((cost) => {
     const pool = HUMOR_MAP[currency] || HUMOR_DEFAULT;
+    const eligible = pool.filter(h => cost >= h.min);
+    const source = eligible.length > 0 ? eligible : pool.slice(0, 1);
     const d = new Date();
     const dayNum = d.getFullYear() * 366 +
       Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 86_400_000);
     const modeOffset = viewMode === "month" ? 0 : viewMode === "quarter" ? 5 : 11;
-    return pool[(randomBase + dayNum + modeOffset) % pool.length](cost);
+    return source[(randomBase + dayNum + modeOffset) % source.length].fn(cost);
   }, [currency, viewMode, randomBase]);
 
   const mk       = `${yr}-${mo}`;

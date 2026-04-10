@@ -27,76 +27,62 @@ export const MONTHS_CN = [
   "七月","八月","九月","十月","十一月","十二月",
 ];
 
-// ─── Humor lines (no emoji) ───────────────────────────────────────────────────
+// ─── Humor lines ─────────────────────────────────────────────────────────────
+// Each entry: { min: number, fn: (cost) => string }
+// min = the price of 1 unit — only shown when cost >= min
 export const HUMOR_USD = [
-  // ... 原有的 20 刀以下选项
-  (c) => `≈ ${Math.max(1, Math.floor(c / 6.5))} 杯星巴克拿铁`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 18))} 顿 Chipotle 外卖`,
-  (c) => `≈ ${Math.max(1,Math.floor(c/19.99))} 个月 Netflix 订阅`,
-
-  // $50 - $150：中等扎心
-  (c) => `≈ ${Math.max(1, Math.floor(c / 65))} 年 Costco 会员费`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 98))} 条 Lululemon Align 瑜伽裤`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 139))} 年 Amazon Prime 会员费`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 150))} 张迪士尼乐园门票`,
-  
-  // $200 - $500：深度扎心
-  (c) => `≈ ${Math.max(1, Math.floor(c / 249))} 副 AirPods Pro 耳机`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 499))} 台 Dyson 吹风机`,
-  
-  // $600 - $1200+：终极扎心
-  (c) => `≈ ${Math.max(1, Math.floor(c / 799))} 部 iPhone 17`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 999))} 台 13寸MacBook Air`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 1000))} 次往返国内的机票 ✈️`,
+  { min: 6.5,  fn: (c) => `≈ ${Math.floor(c / 6.5)} 杯星巴克拿铁` },
+  { min: 18,   fn: (c) => `≈ ${Math.floor(c / 18)} 顿 Chipotle 外卖` },
+  { min: 19.99,fn: (c) => `≈ ${Math.floor(c / 19.99)} 个月 Netflix 订阅` },
+  { min: 65,   fn: (c) => `≈ ${Math.floor(c / 65)} 年 Costco 会员费` },
+  { min: 98,   fn: (c) => `≈ ${Math.floor(c / 98)} 条 Lululemon Align 瑜伽裤` },
+  { min: 139,  fn: (c) => `≈ ${Math.floor(c / 139)} 年 Amazon Prime 会员费` },
+  { min: 150,  fn: (c) => `≈ ${Math.floor(c / 150)} 张迪士尼乐园门票` },
+  { min: 249,  fn: (c) => `≈ ${Math.floor(c / 249)} 副 AirPods Pro 耳机` },
+  { min: 499,  fn: (c) => `≈ ${Math.floor(c / 499)} 台 Dyson 吹风机` },
+  { min: 799,  fn: (c) => `≈ ${Math.floor(c / 799)} 部 iPhone 17` },
+  { min: 999,  fn: (c) => `≈ ${Math.floor(c / 999)} 台 13寸MacBook Air` },
+  { min: 1000, fn: (c) => `≈ ${Math.floor(c / 1000)} 次往返国内的机票 ✈️` },
 ];
 export const HUMOR_CAD = [
-  (c) => `≈ ${Math.max(1, Math.floor(c / 7))} 杯 Tim Hortons`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 3))} 个 Timbits 甜甜圈`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 25))} 顿 Swiss Chalet 外卖`,
-  // $100 - $300 
-  (c) => `≈ ${Math.max(1, Math.floor(c / 98))} 条 Lululemon Align 瑜伽裤`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 98))} 件 Roots 连帽衫`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 198))} 件 Aritzia 羊毛外套`,
-  // $300+ 
-  (c) => `≈ ${Math.max(1, Math.floor(c / 350))} 次 Costco 大采购`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 450))} 个 Dyson 吸尘器`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 700))} 张回国往返机票 ✈️`,
+  { min: 3,   fn: (c) => `≈ ${Math.floor(c / 3)} 个 Timbits 甜甜圈` },
+  { min: 7,   fn: (c) => `≈ ${Math.floor(c / 7)} 杯 Tim Hortons` },
+  { min: 25,  fn: (c) => `≈ ${Math.floor(c / 25)} 顿 Swiss Chalet 外卖` },
+  { min: 98,  fn: (c) => `≈ ${Math.floor(c / 98)} 条 Lululemon Align 瑜伽裤` },
+  { min: 98,  fn: (c) => `≈ ${Math.floor(c / 98)} 件 Roots 连帽衫` },
+  { min: 198, fn: (c) => `≈ ${Math.floor(c / 198)} 件 Aritzia 羊毛外套` },
+  { min: 350, fn: (c) => `≈ ${Math.floor(c / 350)} 次 Costco 大采购` },
+  { min: 450, fn: (c) => `≈ ${Math.floor(c / 450)} 个 Dyson 吸尘器` },
+  { min: 700, fn: (c) => `≈ ${Math.floor(c / 700)} 张回国往返机票 ✈️` },
 ];
-
 export const HUMOR_CNY = [
-  (c) => `≈ ${Math.max(1, Math.floor(c / 18))} 杯瑞幸拿铁`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 25))} 杯喜茶/奈雪`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 69))} 个泡泡玛特盲盒`,
-  // 300 - 800
-  (c) => `≈ ${Math.max(1, Math.floor(c / 350))} 罐飞鹤星飞帆奶粉`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 599))} 张迪士尼乐园门票`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 800))} 次山姆超市大采购`,
-  // 1000+
-  (c) => `≈ ${Math.max(1, Math.floor(c / 1200))} 套海蓝之谜`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 5999))} 部 iPhone 17`,
+  { min: 18,   fn: (c) => `≈ ${Math.floor(c / 18)} 杯瑞幸拿铁` },
+  { min: 25,   fn: (c) => `≈ ${Math.floor(c / 25)} 杯喜茶/奈雪` },
+  { min: 69,   fn: (c) => `≈ ${Math.floor(c / 69)} 个泡泡玛特盲盒` },
+  { min: 350,  fn: (c) => `≈ ${Math.floor(c / 350)} 罐飞鹤星飞帆奶粉` },
+  { min: 599,  fn: (c) => `≈ ${Math.floor(c / 599)} 张迪士尼乐园门票` },
+  { min: 800,  fn: (c) => `≈ ${Math.floor(c / 800)} 次山姆超市大采购` },
+  { min: 1200, fn: (c) => `≈ ${Math.floor(c / 1200)} 套海蓝之谜` },
+  { min: 5999, fn: (c) => `≈ ${Math.floor(c / 5999)} 部 iPhone 17` },
 ];
-
 export const HUMOR_EUR = [
-  (c) => `≈ ${Math.max(1, Math.floor(c / 3))} 个中号 Croissant`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 5))} 杯浓缩咖啡 Espresso`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 35))} 顿当地 Bistro 晚餐`,
-  // 80 - 200
-  (c) => `≈ ${Math.max(1, Math.floor(c / 80))} 件 Zara 换季新装`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 120))} 个 Longchamp 饺子包`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 150))} 台 Nespresso 咖啡机`,
-  // 200+
-  (c) => `≈ ${Math.max(1, Math.floor(c / 100))} 次 Ryanair 廉航往返 ✈️`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 400))} 次 IKEA 搬家式采购`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 900))} 台 Miele 洗衣机`,
+  { min: 3,   fn: (c) => `≈ ${Math.floor(c / 3)} 个中号 Croissant` },
+  { min: 5,   fn: (c) => `≈ ${Math.floor(c / 5)} 杯浓缩咖啡 Espresso` },
+  { min: 35,  fn: (c) => `≈ ${Math.floor(c / 35)} 顿当地 Bistro 晚餐` },
+  { min: 80,  fn: (c) => `≈ ${Math.floor(c / 80)} 件 Zara 换季新装` },
+  { min: 100, fn: (c) => `≈ ${Math.floor(c / 100)} 次 Ryanair 廉航往返 ✈️` },
+  { min: 120, fn: (c) => `≈ ${Math.floor(c / 120)} 个 Longchamp 饺子包` },
+  { min: 150, fn: (c) => `≈ ${Math.floor(c / 150)} 台 Nespresso 咖啡机` },
+  { min: 400, fn: (c) => `≈ ${Math.floor(c / 400)} 次 IKEA 搬家式采购` },
+  { min: 900, fn: (c) => `≈ ${Math.floor(c / 900)} 台 Miele 洗衣机` },
 ];
-
 export const HUMOR_DEFAULT = [
-  (c) => `≈ ${Math.max(1, Math.floor(c / 7))} 杯高品质咖啡`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 25))} 顿丰盛外卖`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 50))} 罐进口奶粉`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 150))} 双新款运动鞋`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 200))} 次超市家庭装采购`,
-  (c) => `≈ ${Math.max(1, Math.floor(c / 800))} 部旗舰级手机`,
+  { min: 7,   fn: (c) => `≈ ${Math.floor(c / 7)} 杯高品质咖啡` },
+  { min: 25,  fn: (c) => `≈ ${Math.floor(c / 25)} 顿丰盛外卖` },
+  { min: 50,  fn: (c) => `≈ ${Math.floor(c / 50)} 罐进口奶粉` },
+  { min: 150, fn: (c) => `≈ ${Math.floor(c / 150)} 双新款运动鞋` },
+  { min: 200, fn: (c) => `≈ ${Math.floor(c / 200)} 次超市家庭装采购` },
+  { min: 800, fn: (c) => `≈ ${Math.floor(c / 800)} 部旗舰级手机` },
 ];
 export const HUMOR_MAP = { USD: HUMOR_USD, CAD: HUMOR_CAD, CNY: HUMOR_CNY };
 
