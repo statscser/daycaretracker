@@ -106,12 +106,13 @@ export function SettingsModal({ settings, tuitionHistory, onUpdateSettings, onUp
               padding:12, border:`1.5px solid ${M.brown}25`,
             }}>
               <div style={{ display:"flex", flexDirection:"column", gap:8, marginBottom:8 }}>
-                <div style={{ overflow:"hidden" }}>
+                <div>
                   <label style={{ fontSize:10, fontWeight:700, color:M.lChar, display:"block", marginBottom:4 }}>起始日期</label>
                   <input type="date" value={newStart} onChange={e => setNewStart(e.target.value)} style={{
                     width:"100%", minWidth:0, boxSizing:"border-box", padding:"7px 10px", borderRadius:10,
                     border:`1.5px solid ${M.brown}40`, fontSize:13, fontFamily:"inherit",
                     background:M.white, color:M.char, outline:"none",
+                    WebkitAppearance:"none", appearance:"none",
                   }}/>
                 </div>
                 <div>

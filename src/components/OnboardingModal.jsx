@@ -95,7 +95,7 @@ export function OnboardingModal({ onSave }) {
         </div>
 
         {/* Start date */}
-        <div style={{ marginBottom:16, overflow:"hidden" }}>
+        <div style={{ marginBottom:16 }}>
           <label style={{ fontSize:12, fontWeight:700, color:M.lChar, display:"block", marginBottom:6 }}>
             📅 入园起始日期
           </label>
@@ -107,6 +107,7 @@ export function OnboardingModal({ onSave }) {
               borderRadius:14, border:`1.5px solid ${M.brown}40`,
               fontSize:14, fontFamily:"inherit", fontWeight:600,
               background:M.white, color:M.char, outline:"none",
+              WebkitAppearance:"none", appearance:"none",
             }}
           />
         </div>
