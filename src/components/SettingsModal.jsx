@@ -105,8 +105,8 @@ export function SettingsModal({ settings, tuitionHistory, onUpdateSettings, onUp
               marginTop:8, background:`${M.cream}80`, borderRadius:14,
               padding:12, border:`1.5px solid ${M.brown}25`,
             }}>
-              <div style={{ display:"flex", gap:8, marginBottom:8 }}>
-                <div style={{ flex:1 }}>
+              <div style={{ display:"flex", flexDirection:"column", gap:8, marginBottom:8 }}>
+                <div>
                   <label style={{ fontSize:10, fontWeight:700, color:M.lChar, display:"block", marginBottom:4 }}>起始日期</label>
                   <input type="date" value={newStart} onChange={e => setNewStart(e.target.value)} style={{
                     width:"100%", boxSizing:"border-box", padding:"7px 10px", borderRadius:10,
@@ -114,7 +114,7 @@ export function SettingsModal({ settings, tuitionHistory, onUpdateSettings, onUp
                     background:M.white, color:M.char, outline:"none",
                   }}/>
                 </div>
-                <div style={{ flex:1 }}>
+                <div>
                   <label style={{ fontSize:10, fontWeight:700, color:M.lChar, display:"block", marginBottom:4 }}>
                     金额 ({cur.symbol})
                   </label>
