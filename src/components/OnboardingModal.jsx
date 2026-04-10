@@ -76,9 +76,9 @@ export function OnboardingModal({ onSave }) {
             💰 每月学费 ({cur.symbol})
           </label>
           <input
-            type="number" inputMode="numeric" value={amount}
+            type="text" inputMode="numeric" pattern="[0-9]*" value={amount}
             placeholder={`请输入金额，如 ${currency === "CNY" ? "3000" : "2000"}`}
-            onChange={e => { setAmount(e.target.value); setAmountErr(false); }}
+            onChange={e => { setAmount(e.target.value.replace(/[^0-9]/g, "")); setAmountErr(false); }}
             style={{
               width:"100%", boxSizing:"border-box", padding:"10px 14px",
               borderRadius:14,

@@ -7,7 +7,7 @@ export function SettingsModal({ settings, tuitionHistory, onUpdateSettings, onUp
   const [showAdd,  setShowAdd]  = useState(false);
   const [newStart, setNewStart] = useState("");
   const [newAmt,   setNewAmt]   = useState(
-    () => tuitionHistory[tuitionHistory.length - 1]?.amount ?? 2000
+    () => String(tuitionHistory[tuitionHistory.length - 1]?.amount ?? 2000)
   );
 
   const sorted = [...tuitionHistory].sort((a, b) => a.startDate.localeCompare(b.startDate));
@@ -131,8 +131,8 @@ export function SettingsModal({ settings, tuitionHistory, onUpdateSettings, onUp
                   <label style={{ fontSize:10, fontWeight:700, color:M.lChar, display:"block", marginBottom:4 }}>
                     金额 ({cur.symbol})
                   </label>
-                  <input type="number" value={newAmt}
-                    onChange={e => setNewAmt(Math.max(0, +e.target.value))} style={{
+                  <input type="text" inputMode="numeric" pattern="[0-9]*" value={newAmt}
+                    onChange={e => setNewAmt(e.target.value.replace(/[^0-9]/g, ""))} style={{
                     width:"100%", boxSizing:"border-box", padding:"7px 10px", borderRadius:10,
                     border:`1.5px solid ${M.brown}40`, fontSize:13, fontFamily:"inherit",
                     background:M.white, color:M.char, outline:"none",
