@@ -1,12 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
 import { M, CURRENCIES, HUMOR_MAP, HUMOR_DEFAULT, ABSENCE_REASONS } from "./constants";
-import { loadData, saveData } from "./lib/storage";
+import { loadData, saveData, isFirstTime } from "./lib/storage";
 import { getDays, getFirst, getTuitionForMonth, calculatePeriodStats, aggregateStats } from "./lib/stats";
 import { HeaderSection }    from "./components/HeaderSection";
 import { SegmentedControl } from "./components/SegmentedControl";
 import { SettingsModal }    from "./components/SettingsModal";
 import { DashboardCard }    from "./components/DashboardCard";
 import { CalendarSection }  from "./components/CalendarSection";
+import { OnboardingModal }  from "./components/OnboardingModal";
 
 export default function App() {
   const now = new Date();
@@ -15,6 +16,7 @@ export default function App() {
   const [viewMode, setViewMode] = useState("month");
   const [data,     setData]     = useState(() => loadData());
   const [setup,    setSetup]    = useState(false);
+  const [needsSetup, setNeedsSetup] = useState(() => isFirstTime());
   const [humorIdx, setHumorIdx] = useState(0);
 
   // Persist unified data object on every change
@@ -31,6 +33,11 @@ export default function App() {
 
   const updateAbsence = (key, entry) =>
     setData(d => ({ ...d, absences: { ...d.absences, [key]: entry } }));
+
+  const handleOnboardingSave = ({ settings: s, tuitionHistory: th }) => {
+    setData(d => ({ ...d, settings: { ...d.settings, ...s }, tuitionHistory: th }));
+    setNeedsSetup(false);
+  };
 
   const cur     = CURRENCIES.find(c => c.code === currency) || CURRENCIES[0];
   const dh      = eh - sh;
@@ -115,6 +122,10 @@ export default function App() {
       <HeaderSection onSettingsClick={() => setSetup(true)} />
 
       <SegmentedControl value={viewMode} onChange={setViewMode} />
+
+      {needsSetup && (
+        <OnboardingModal onSave={handleOnboardingSave} />
+      )}
 
       {setup && (
         <SettingsModal

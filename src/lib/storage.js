@@ -54,3 +54,12 @@ export function loadData() {
 export function saveData(data) {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch { /* ignore */ }
 }
+
+// Returns true only if no data has ever been saved (new user, no migration keys either)
+export function isFirstTime() {
+  try {
+    if (localStorage.getItem(STORAGE_KEY) !== null) return false;
+    if (localStorage.getItem("dc_tuition") !== null) return false;
+    return true;
+  } catch { return false; }
+}
