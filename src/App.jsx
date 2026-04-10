@@ -17,10 +17,10 @@ export default function App() {
   const [viewMode, setViewMode] = useState("month");
   const [data,     setData]     = useState(() => loadData());
   const [setup,    setSetup]    = useState(false);
+  const [randomBase,   ]                = useState(() => Math.floor(Math.random() * 1000));
   const [needsSetup,   setNeedsSetup]   = useState(() => isFirstTime());
   // Show privacy notice once for existing users (new users see it embedded in onboarding)
   const [needsPrivacy, setNeedsPrivacy] = useState(() => !isFirstTime() && !isPrivacySeen());
-  const [humorIdx, setHumorIdx] = useState(0);
 
   // Persist unified data object on every change
   useEffect(() => { saveData(data); }, [data]);
@@ -53,7 +53,7 @@ export default function App() {
                              [0,1,2,3,4,5,6,7,8,9,10,11];
 
   const stats = aggregateStats(absences, yr, periodMonths, tuitionHistory, sh, eh);
-  const { totalAbsHrs, totalAbsDays, sunk, wdays, dailyCost,
+  const { totalAbsDays, sunk, wdays, dailyCost,
           sickDays, vacDays, holidayDays, trainingDays, otherDays } = stats;
 
   // hrCost for the day popup always reflects the displayed calendar month
@@ -62,11 +62,12 @@ export default function App() {
 
   const getHumor = useCallback((cost) => {
     const pool = HUMOR_MAP[currency] || HUMOR_DEFAULT;
-    return pool[humorIdx % pool.length](cost);
-  }, [currency, humorIdx]);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => { setHumorIdx(Math.floor(Math.random() * 10)); }, [totalAbsHrs > 0, mo, yr]);
+    const d = new Date();
+    const dayNum = d.getFullYear() * 366 +
+      Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 86_400_000);
+    const modeOffset = viewMode === "month" ? 0 : viewMode === "quarter" ? 5 : 11;
+    return pool[(randomBase + dayNum + modeOffset) % pool.length](cost);
+  }, [currency, viewMode, randomBase]);
 
   const mk       = `${yr}-${mo}`;
   const isWe     = (d) => { const w = new Date(yr, mo, d).getDay(); return w === 0 || w === 6; };
