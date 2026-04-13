@@ -30,8 +30,8 @@ export function DashboardCard({ sunk, dailyCost, totalAbsDays, wdays, mood, fmt,
       textAlign:"center", position:"relative",
     }}>
       <div style={{ position:"absolute", top:14, right:18 }}><Face mood={mood}/></div>
-      <p style={{ fontSize:11, color:M.lChar, margin:"0 0 2px", fontWeight:600, paddingLeft:48, paddingRight:48 }}>📊 {reportTitle}</p>
-      <p style={{ fontSize:10, color:`${M.lChar}99`, margin:"0 0 8px", paddingLeft:48, paddingRight:48 }}>{subTitle}</p>
+      <p style={{ fontSize:11, color:M.lChar, margin:"0 0 2px", fontWeight:600, paddingLeft:44, paddingRight:44 }}>📊 {reportTitle}</p>
+      <p style={{ fontSize:10, color:`${M.lChar}99`, margin:"0 0 8px", paddingLeft:44, paddingRight:44 }}>{subTitle}</p>
       <div style={{
         fontSize:40, fontWeight:800, letterSpacing:-1.5, lineHeight:1.1,
         color: sunk > 0 ? M.roseDk : M.sageDk, transition:"color 0.3s",
