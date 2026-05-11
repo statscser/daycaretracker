@@ -1,7 +1,9 @@
 import { M } from "../constants";
+import { getStrings } from "../lib/i18n";
 
-export function SegmentedControl({ value, onChange }) {
-  const opts = [{ v:"month", l:"月" }, { v:"quarter", l:"季" }, { v:"year", l:"年" }];
+export function SegmentedControl({ value, onChange, lang }) {
+  const s = getStrings(lang);
+  const opts = [{ v:"month", l:s.tabMonth }, { v:"quarter", l:s.tabQuarter }, { v:"year", l:s.tabYear }];
   return (
     <div style={{
       display:"flex", background:`${M.brown}18`, borderRadius:18, padding:3, gap:2,

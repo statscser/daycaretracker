@@ -26,6 +26,13 @@ export const MONTHS_CN = [
   "一月","二月","三月","四月","五月","六月",
   "七月","八月","九月","十月","十一月","十二月",
 ];
+// English calendar labels (Sunday-first)
+export const WEEKDAYS_EN = ["S", "M", "T", "W", "T", "F", "S"];
+export const MONTHS_EN = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+export const MONTHS_EN_FULL = [
+  "January","February","March","April","May","June",
+  "July","August","September","October","November","December",
+];
 
 // ─── Humor lines ─────────────────────────────────────────────────────────────
 // Each entry: { min: number, fn: (cost) => string }
@@ -86,17 +93,67 @@ export const HUMOR_DEFAULT = [
 ];
 export const HUMOR_MAP = { USD: HUMOR_USD, CAD: HUMOR_CAD, CNY: HUMOR_CNY };
 
+// ─── English humor lines ──────────────────────────────────────────────────────
+export const HUMOR_USD_EN = [
+  { min: 6.5,   fn: (c) => `≈ ${Math.floor(c / 6.5)} Starbucks lattes` },
+  { min: 18,    fn: (c) => `≈ ${Math.floor(c / 18)} Chipotle burritos` },
+  { min: 19.99, fn: (c) => `≈ ${Math.floor(c / 19.99)} months of Netflix` },
+  { min: 65,    fn: (c) => `≈ ${Math.floor(c / 65)} Costco memberships` },
+  { min: 98,    fn: (c) => `≈ ${Math.floor(c / 98)} pairs of Lululemon leggings` },
+  { min: 139,   fn: (c) => `≈ ${Math.floor(c / 139)} years of Amazon Prime` },
+  { min: 150,   fn: (c) => `≈ ${Math.floor(c / 150)} Disneyland tickets` },
+  { min: 249,   fn: (c) => `≈ ${Math.floor(c / 249)} pairs of AirPods Pro` },
+  { min: 499,   fn: (c) => `≈ ${Math.floor(c / 499)} Dyson hair dryers` },
+  { min: 799,   fn: (c) => `≈ ${Math.floor(c / 799)} iPhone 17s` },
+  { min: 999,   fn: (c) => `≈ ${Math.floor(c / 999)} MacBook Airs` },
+  { min: 1000,  fn: (c) => `≈ ${Math.floor(c / 1000)} round-trip flights ✈️` },
+];
+export const HUMOR_CAD_EN = [
+  { min: 3,   fn: (c) => `≈ ${Math.floor(c / 3)} Timbits` },
+  { min: 7,   fn: (c) => `≈ ${Math.floor(c / 7)} Tim Hortons coffees` },
+  { min: 25,  fn: (c) => `≈ ${Math.floor(c / 25)} Swiss Chalet meals` },
+  { min: 98,  fn: (c) => `≈ ${Math.floor(c / 98)} pairs of Lululemon leggings` },
+  { min: 198, fn: (c) => `≈ ${Math.floor(c / 198)} Aritzia sweaters` },
+  { min: 350, fn: (c) => `≈ ${Math.floor(c / 350)} Costco hauls` },
+  { min: 700, fn: (c) => `≈ ${Math.floor(c / 700)} flights back home ✈️` },
+];
+export const HUMOR_EUR_EN = [
+  { min: 3,   fn: (c) => `≈ ${Math.floor(c / 3)} croissants` },
+  { min: 5,   fn: (c) => `≈ ${Math.floor(c / 5)} espressos` },
+  { min: 35,  fn: (c) => `≈ ${Math.floor(c / 35)} bistro dinners` },
+  { min: 80,  fn: (c) => `≈ ${Math.floor(c / 80)} Zara outfits` },
+  { min: 100, fn: (c) => `≈ ${Math.floor(c / 100)} Ryanair round trips ✈️` },
+  { min: 150, fn: (c) => `≈ ${Math.floor(c / 150)} Nespresso machines` },
+  { min: 400, fn: (c) => `≈ ${Math.floor(c / 400)} IKEA shopping trips` },
+];
+export const HUMOR_DEFAULT_EN = [
+  { min: 7,   fn: (c) => `≈ ${Math.floor(c / 7)} specialty coffees` },
+  { min: 25,  fn: (c) => `≈ ${Math.floor(c / 25)} takeout meals` },
+  { min: 50,  fn: (c) => `≈ ${Math.floor(c / 50)} cans of formula` },
+  { min: 150, fn: (c) => `≈ ${Math.floor(c / 150)} pairs of sneakers` },
+  { min: 800, fn: (c) => `≈ ${Math.floor(c / 800)} flagship phones` },
+];
+export const HUMOR_MAP_EN = { USD: HUMOR_USD_EN, CAD: HUMOR_CAD_EN, EUR: HUMOR_EUR_EN };
+
 // ─── Absence copy & reasons ───────────────────────────────────────────────────
 export const ABSENCE_QUOTES = [
   "宝宝今天在家修炼仙气 ✨", "小肉球不在，好空旷 🤧",
   "宝宝说今天要窝在沙发里 😴", "今天宝宝居家办公 🏠",
   "宝宝表示今天说走就走了 ✈️", "宝宝表示今天不营业 🫠",
 ];
+export const ABSENCE_QUOTES_EN = [
+  "Baby called in sick today 🤒",
+  "Couch > Classroom today 😴",
+  "PTO: Parental Time Off ✈️",
+  "Baby said no ❌",
+  "Out of office, indefinitely 🏠",
+  "Today's a write-off 🫠",
+];
 
 export const ABSENCE_REASONS = [
-  { id: "sick",             label: "💊 生病",    icon: "💊", color: M.sickYellow },
-  { id: "vacation",         label: "✈️ 旅行",    icon: "✈️", color: M.mint },
-  { id: "holiday",          label: "📆 公共假期", icon: "📆", color: M.holiday },
-  { id: "teacher_training", label: "💸 老师培训", icon: "💸", color: M.lav },
-  { id: "other",            label: "💔 其他",    icon: "💔", color: M.gray },
+  { id: "sick",             label: "💊 生病",    labelEn: "💊 Sick day",    icon: "💊", color: M.sickYellow },
+  { id: "vacation",         label: "✈️ 旅行",    labelEn: "✈️ Travel",      icon: "✈️", color: M.mint },
+  { id: "holiday",          label: "📆 公共假期", labelEn: "📆 Holiday",     icon: "📆", color: M.holiday },
+  { id: "teacher_training", label: "💸 老师培训", labelEn: "💸 Staff training",  icon: "💸", color: M.lav },
+  { id: "other",            label: "💔 其他",    labelEn: "💔 Other",       icon: "💔", color: M.gray },
 ];

@@ -1,7 +1,9 @@
 import { M } from "../constants";
+import { getStrings } from "../lib/i18n";
 import iconUrl from "../assets/icon.svg";
 
-export function HeaderSection({ onSettingsClick }) {
+export function HeaderSection({ onSettingsClick, lang }) {
+  const s = getStrings(lang);
   return (
     <div style={{ position:"relative", textAlign:"center", marginBottom:8 }}>
       <button onClick={onSettingsClick} style={{
@@ -16,7 +18,7 @@ export function HeaderSection({ onSettingsClick }) {
           fontSize:22, fontWeight:800, margin:0, letterSpacing:-0.5,
           background:`linear-gradient(135deg,${M.char},${M.lChar})`,
           WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent",
-        }}>宝宝碎钞机</h1>
+        }}>{s.appTitle}</h1>
       </div>
     </div>
   );

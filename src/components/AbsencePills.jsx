@@ -1,15 +1,16 @@
 import { M } from "../constants";
 
-export function AbsencePills({ sickDays, vacDays, holidayDays, trainingDays, otherDays, totalAbsHrs }) {
+export function AbsencePills({ sickDays, vacDays, holidayDays, trainingDays, otherDays, totalAbsHrs, lang }) {
   if (totalAbsHrs === 0) return null;
+  const isEn = lang === "en";
   return (
     <div style={{ display:"flex", gap:8, margin:"0 0 12px", justifyContent:"center", flexWrap:"wrap" }}>
       {[
-        { label:"💊 生病",    count:sickDays,     color:M.sickYellow },
-        { label:"✈️ 旅行",    count:vacDays,      color:M.lav },
-        { label:"📆 假期",    count:holidayDays,  color:M.holiday },
-        { label:"💸 老师培训", count:trainingDays, color:M.mint },
-        { label:"💔 其他",    count:otherDays,    color:M.gray },
+        { label: isEn ? "💊 Sick day"   : "💊 生病",    count:sickDays,     color:M.sickYellow },
+        { label: isEn ? "✈️ Travel"     : "✈️ 旅行",    count:vacDays,      color:M.lav },
+        { label: isEn ? "📆 Holiday"    : "📆 假期",    count:holidayDays,  color:M.holiday },
+        { label: isEn ? "💸 Teacher PD" : "💸 老师培训", count:trainingDays, color:M.mint },
+        { label: isEn ? "💔 Other"      : "💔 其他",    count:otherDays,    color:M.gray },
       ].filter(x => x.count > 0).map((x, i) => (
         <div key={i} style={{
           background:M.white, borderRadius:16, padding:"8px 14px", textAlign:"center",

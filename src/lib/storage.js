@@ -13,7 +13,7 @@ export const STORAGE_KEY = "dc_v1_data";
 export function getDefaultData() {
   return {
     version: 1,
-    settings: { currency: "USD", sh: 8, eh: 18 },
+    settings: { currency: "USD", sh: 8, eh: 18, lang: "zh" },
     tuitionHistory: [{ startDate: "2020-01-01", amount: 2000 }],
     absences: {},
   };

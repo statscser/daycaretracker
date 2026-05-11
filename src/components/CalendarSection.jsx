@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import { M, WEEKDAYS, MONTHS_CN, ABSENCE_QUOTES, ABSENCE_REASONS } from "../constants";
+import { M, WEEKDAYS, WEEKDAYS_EN, MONTHS_CN, MONTHS_EN, MONTHS_EN_FULL,
+         ABSENCE_QUOTES, ABSENCE_QUOTES_EN, ABSENCE_REASONS } from "../constants";
+import { getStrings } from "../lib/i18n";
 import { Ring } from "./icons";
 import { getDays, getFirst, getTuitionForMonth, calculatePeriodStats } from "../lib/stats";
 
@@ -8,8 +10,8 @@ const reasonColor = Object.fromEntries(ABSENCE_REASONS.map(r => [r.id, r.color])
 // ─── Pie chart: filled pie where absence reasons are colored slices ────────────
 function PieChart({ wdays, sickDays, vacDays, holidayDays, trainingDays, otherDays, size = 32 }) {
   const c = size / 2;
-  const R = size * 0.46;      // outer radius
-  const pathR = R / 2;        // stroke-trick: path at R/2, strokeWidth = R fills center→edge
+  const R = size * 0.46;
+  const pathR = R / 2;
   const circ = 2 * Math.PI * pathR;
 
   if (wdays === 0) {
@@ -31,9 +33,7 @@ function PieChart({ wdays, sickDays, vacDays, holidayDays, trainingDays, otherDa
   let cumulative = 0;
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-      {/* Full sage base = attended days */}
       <circle cx={c} cy={c} r={R} fill={M.sage} />
-      {/* Absence slices drawn on top via thick-stroke arc trick */}
       {slices.map((s, i) => {
         const len    = (s.days / wdays) * circ;
         const offset = -(cumulative / wdays) * circ;
@@ -52,16 +52,21 @@ function PieChart({ wdays, sickDays, vacDays, holidayDays, trainingDays, otherDa
 
 export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry, setEntry,
                                   isWe, isToday, ratio, onPrev, onNext,
-                                  viewMode, quarter,
+                                  viewMode, quarter, lang,
                                   absences, tuitionHistory, sh, eh,
                                   onGoToMonth, onToday }) {
   const [sel,          setSel]          = useState(null);
   const [pendingEntry, setPendingEntry] = useState({ hours: 0, reason: "sick" });
   const calRef = useRef(null);
 
+  const s = getStrings(lang);
+  const weekdays   = lang === "en" ? WEEKDAYS_EN : WEEKDAYS;
+  const monthsShort = lang === "en" ? MONTHS_EN : MONTHS_CN;
+  const monthNav   = lang === "en" ? MONTHS_EN_FULL[mo] : MONTHS_CN[mo];
+  const quotes     = lang === "en" ? ABSENCE_QUOTES_EN : ABSENCE_QUOTES;
+
   useEffect(() => { setSel(null); }, [yr, mo, viewMode]);
 
-  // Snapshot the saved entry when popup opens; discard on close
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { if (sel !== null) setPendingEntry(getEntry(sel)); }, [sel]);
 
@@ -82,41 +87,39 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
         <span style={{ fontSize:12, fontWeight:600, color:M.lChar, marginLeft:6 }}>{yr}</span>
       </>
     ) : viewMode === "year" ? (
-      <span style={{ fontSize:17, fontWeight:800, color:M.char }}>{yr} 年</span>
+      <span style={{ fontSize:17, fontWeight:800, color:M.char }}>{s.yearLabel(yr)}</span>
     ) : (
       <>
-        <span style={{ fontSize:17, fontWeight:800, color:M.char }}>{MONTHS_CN[mo]}</span>
+        <span style={{ fontSize:17, fontWeight:800, color:M.char }}>{monthNav}</span>
         <span style={{ fontSize:12, fontWeight:600, color:M.lChar, marginLeft:6 }}>{yr}</span>
       </>
     );
 
- const NavRow = () => (
-    <div style={{ 
-      position: "relative", 
-      display: "flex", 
-      alignItems: "center", 
-      justifyContent: "space-between", 
-      marginBottom: 12, 
+  const NavRow = () => (
+    <div style={{
+      position: "relative",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      marginBottom: 12,
       padding: "0 4px",
       minHeight: "36px"
     }}>
-      {/* 左箭头 */}
-      <button onClick={onPrev} style={{ 
-        background: "none", border: "none", fontSize: 24, cursor: "pointer", 
-        padding: "4px 12px", color: M.lChar, fontFamily: "inherit", zIndex: 10 
+      <button onClick={onPrev} style={{
+        background: "none", border: "none", fontSize: 24, cursor: "pointer",
+        padding: "4px 12px", color: M.lChar, fontFamily: "inherit", zIndex: 10
       }}>‹</button>
 
-      {/* 居中容器 */}
-      <div style={{ 
+      <div style={{
         flex: 1,
-        display: "flex", 
-        justifyContent: "center", 
+        display: "flex",
+        justifyContent: "center",
         alignItems: "center",
         overflow: "visible"
       }}>
-        {/* 核心技巧：左侧占位符宽度 = 右侧按钮宽度，确保文字在物理中点 */}
+        {/* Ghost spacer matches Today button width */}
         <div style={{ visibility: "hidden", display: "flex", alignItems: "center" }}>
-          <button style={{ padding: "2px 8px", marginLeft: 6, fontSize: 11 }}>今天</button>
+          <button style={{ padding: "2px 8px", marginLeft: 6, fontSize: 11 }}>{s.todayBtn}</button>
         </div>
 
         <span style={{
@@ -129,7 +132,6 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
           {navLabel}
         </span>
 
-        {/* 实际可见的按钮 */}
         <button onClick={onToday} style={{
           background: `${M.sage}22`,
           border: `1.5px solid ${M.sage}50`,
@@ -142,13 +144,12 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
           fontFamily: "inherit",
           lineHeight: 1.5,
           whiteSpace: "nowrap"
-        }}>今天</button>
+        }}>{s.todayBtn}</button>
       </div>
 
-      {/* 右箭头 */}
-      <button onClick={onNext} style={{ 
-        background: "none", border: "none", fontSize: 24, cursor: "pointer", 
-        padding: "4px 12px", color: M.lChar, fontFamily: "inherit", zIndex: 10 
+      <button onClick={onNext} style={{
+        background: "none", border: "none", fontSize: 24, cursor: "pointer",
+        padding: "4px 12px", color: M.lChar, fontFamily: "inherit", zIndex: 10
       }}>›</button>
     </div>
   );
@@ -163,7 +164,6 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
   if (viewMode === "quarter") {
     const qMonths = [quarter*3, quarter*3+1, quarter*3+2];
 
-    // Pre-compute per-month stats for the summary strip
     const qStats = qMonths.map(m => {
       const tuition = getTuitionForMonth(tuitionHistory, yr, m);
       return calculatePeriodStats(absences, yr, m, { sh, eh, tuition });
@@ -173,7 +173,6 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
       <div ref={calRef} style={cardStyle}>
         <NavRow />
 
-        {/* 3 mini dot-grid panels */}
         <div style={{ display:"flex", gap:8 }}>
           {qMonths.map(m => {
             const mDim   = getDays(yr, m);
@@ -189,12 +188,12 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
               onMouseLeave={e => e.currentTarget.style.background = `${M.cream}80`}
               >
                 <div style={{ textAlign:"center", fontSize:11, fontWeight:800, color:M.char, marginBottom:6 }}>
-                  {MONTHS_CN[m]}
+                  {monthsShort[m]}
                 </div>
                 {/* Mini weekday header */}
                 <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:1, marginBottom:3 }}>
-                  {["日","一","二","三","四","五","六"].map((wd, i) => (
-                    <div key={wd} style={{
+                  {weekdays.map((wd, i) => (
+                    <div key={i} style={{
                       textAlign:"center", fontSize:6, fontWeight:700,
                       color: (i===0||i===6) ? `${M.rose}99` : `${M.lChar}77`,
                     }}>{wd}</div>
@@ -231,16 +230,16 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
         {/* Summary strip — per-month stats */}
         <div style={{ display:"flex", gap:8, marginTop:10 }}>
           {qMonths.map((m, qi) => {
-            const s = qStats[qi];
+            const ms = qStats[qi];
             const reasonPills = ABSENCE_REASONS
               .map(r => ({
                 icon: r.icon,
                 color: r.color,
-                count: r.id === "sick"             ? s.sickDays     :
-                       r.id === "vacation"         ? s.vacDays      :
-                       r.id === "holiday"          ? s.holidayDays  :
-                       r.id === "teacher_training" ? s.trainingDays :
-                                                     s.otherDays,
+                count: r.id === "sick"             ? ms.sickDays     :
+                       r.id === "vacation"         ? ms.vacDays      :
+                       r.id === "holiday"          ? ms.holidayDays  :
+                       r.id === "teacher_training" ? ms.trainingDays :
+                                                     ms.otherDays,
               }))
               .filter(p => p.count > 0);
             return (
@@ -249,18 +248,13 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
                 background:`${M.cream}50`, border:`1px solid ${M.brown}12`,
                 textAlign:"center",
               }}>
-                {/* Loss */}
                 <div style={{ fontSize:13, fontWeight:800, lineHeight:1.2,
-                  color: s.sunk > 0 ? M.roseDk : M.sageDk }}>
-                  {s.sunk > 0 ? fmt(s.sunk) : "✨"}
+                  color: ms.sunk > 0 ? M.roseDk : M.sageDk }}>
+                  {ms.sunk > 0 ? fmt(ms.sunk) : "✨"}
                 </div>
-                {/* Absence days */}
                 <div style={{ fontSize:9, color:M.lChar, fontWeight:600, margin:"2px 0 4px" }}>
-                  {s.sunk > 0
-                    ? `${s.totalAbsDays.toFixed(1)} 天缺勤`
-                    : "全勤"}
+                  {ms.sunk > 0 ? s.absDaysLabel(ms.totalAbsDays) : s.perfectLabel}
                 </div>
-                {/* Reason pills */}
                 {reasonPills.length > 0 && (
                   <div style={{ display:"flex", gap:3, justifyContent:"center", flexWrap:"wrap" }}>
                     {reasonPills.map((p, i) => (
@@ -280,7 +274,7 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
     );
   }
 
-  // ─── Year view: 12 month cards with pie chart ──────────────────────────────
+  // ─── Year view ─────────────────────────────────────────────────────────────
   if (viewMode === "year") {
     const now2 = new Date();
     return (
@@ -289,7 +283,7 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
         <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:6 }}>
           {Array.from({ length: 12 }, (_, m) => {
             const tuition = getTuitionForMonth(tuitionHistory, yr, m);
-            const s       = calculatePeriodStats(absences, yr, m, { sh, eh, tuition });
+            const ms      = calculatePeriodStats(absences, yr, m, { sh, eh, tuition });
             const isCurMo = yr === now2.getFullYear() && m === now2.getMonth();
             return (
               <div key={m} onClick={() => onGoToMonth(m)} style={{
@@ -302,24 +296,24 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
               onMouseLeave={e => e.currentTarget.style.background = isCurMo ? `${M.sage}20` : `${M.cream}60`}
               >
                 <div style={{ fontSize:10, fontWeight:800, color:M.char, marginBottom:4 }}>
-                  {MONTHS_CN[m]}
+                  {monthsShort[m]}
                 </div>
                 <div style={{ display:"flex", justifyContent:"center", marginBottom:4 }}>
                   <PieChart size={34}
-                    wdays={s.wdays}
-                    sickDays={s.sickDays}       vacDays={s.vacDays}
-                    holidayDays={s.holidayDays} trainingDays={s.trainingDays}
-                    otherDays={s.otherDays} />
+                    wdays={ms.wdays}
+                    sickDays={ms.sickDays}       vacDays={ms.vacDays}
+                    holidayDays={ms.holidayDays} trainingDays={ms.trainingDays}
+                    otherDays={ms.otherDays} />
                 </div>
-                {s.sunk > 0 ? <>
+                {ms.sunk > 0 ? <>
                   <div style={{ fontSize:10, fontWeight:800, color:M.roseDk, lineHeight:1.2 }}>
-                    {fmt(s.sunk)}
+                    {fmt(ms.sunk)}
                   </div>
                   <div style={{ fontSize:9, color:M.lChar, fontWeight:600, marginTop:1 }}>
-                    缺勤 {s.totalAbsDays.toFixed(1)} 天
+                    {s.absDaysLabel(ms.totalAbsDays)}
                   </div>
                 </> : (
-                  <div style={{ fontSize:9, fontWeight:700, color:M.sageDk }}>✨ 全勤</div>
+                  <div style={{ fontSize:9, fontWeight:700, color:M.sageDk }}>✨ {s.perfectLabel}</div>
                 )}
               </div>
             );
@@ -336,8 +330,8 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
 
       {/* Weekday headers */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:2, marginBottom:4 }}>
-        {WEEKDAYS.map((d, i) => (
-          <div key={d} style={{
+        {weekdays.map((d, i) => (
+          <div key={i} style={{
             textAlign:"center", fontSize:10, fontWeight:700,
             color: (i === 0 || i === 6) ? `${M.rose}AA` : `${M.lChar}99`, padding:"2px 0",
           }}>{d}</div>
@@ -364,7 +358,6 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
               opacity: we ? 0.4 : 1,
               overflow:"visible", minWidth:0,
             }}>
-              {/* Ring fills 80% of the cell width so it never overflows */}
               <div style={{ width:"80%", aspectRatio:"1" }}>
                 <Ring ratio={ratio(d)} size={36} isToday={td} isEmpty={false}
                   reason={ab > 0 ? entry.reason : null} responsive />
@@ -391,13 +384,13 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
           boxShadow:`0 12px 40px ${M.char}25`, border:`2px solid ${M.brown}25`, zIndex:100,
         }}>
           <div style={{ textAlign:"center", marginBottom:10 }}>
-            <div style={{ fontSize:14, fontWeight:800 }}>{mo+1}月{sel}日</div>
+            <div style={{ fontSize:14, fontWeight:800 }}>{s.popupDate(mo, sel)}</div>
             <div style={{ fontSize:11, color:M.lChar, fontWeight:600, marginTop:2, lineHeight:1.3 }}>
-              {ABSENCE_QUOTES[sel % ABSENCE_QUOTES.length]}
+              {quotes[sel % quotes.length]}
             </div>
           </div>
 
-          {/* Reason selector — row 1: first 3, row 2: last 2 */}
+          {/* Reason selector */}
           <div style={{ display:"flex", flexDirection:"column", gap:5, marginBottom:10 }}>
             {[ABSENCE_REASONS.slice(0, 3), ABSENCE_REASONS.slice(3)].map((group, gi) => (
               <div key={gi} style={{ display:"flex", gap:5, justifyContent:"center" }}>
@@ -410,7 +403,7 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
                     fontFamily:"inherit", cursor:"pointer", transition:"all 0.15s",
                     border: pendingEntry.hours > 0 && pendingEntry.reason === r.id ? `2px solid ${M.sageDk}` : `1.5px solid ${M.brown}25`,
                     background: pendingEntry.hours > 0 && pendingEntry.reason === r.id ? `${M.sage}25` : "transparent", color:M.char,
-                  }}>{r.label}</button>
+                  }}>{lang === "en" ? r.labelEn : r.label}</button>
                 ))}
               </div>
             ))}
@@ -420,14 +413,14 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
             <span style={{ fontSize:28, fontWeight:800, color:pendingEntry.hours>0 ? M.roseDk : M.sageDk }}>
               {pendingEntry.hours}
             </span>
-            <span style={{ fontSize:13, fontWeight:600, color:M.lChar, marginLeft:4 }}>小时缺勤</span>
+            <span style={{ fontSize:13, fontWeight:600, color:M.lChar, marginLeft:4 }}>{s.absHours}</span>
           </div>
           <div style={{ padding:"0 4px", marginBottom:8 }}>
             <input type="range" min={0} max={dh} step={0.5} value={pendingEntry.hours}
               onChange={e => setPendingEntry(p => ({ ...p, hours: +e.target.value }))}
               style={{ width:"100%", accentColor:M.rose, height:6 }}/>
             <div style={{ display:"flex", justifyContent:"space-between", fontSize:9, color:M.lChar, fontWeight:600, marginTop:2 }}>
-              <span>全勤 ✨</span><span>全天消失 🐟</span>
+              <span>{s.fullAttend}</span><span>{s.goneAllDay}</span>
             </div>
           </div>
           {pendingEntry.hours > 0 && (
@@ -435,11 +428,11 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
               textAlign:"center", fontSize:11, color:M.roseDk, fontWeight:700,
               background:`${M.rose}15`, borderRadius:12, padding:"5px 8px", marginBottom:8, lineHeight:1.5,
             }}>
-              💸 今日损失: {fmt(pendingEntry.hours * hrCost)}
-              {pendingEntry.reason === "sick"             && <><br/><span style={{ fontSize:10, color:M.lChar }}>别忘了 copay 还要再花一笔 😳</span></>}
-              {pendingEntry.reason === "vacation"         && <><br/><span style={{ fontSize:10, color:M.lChar }}>机票酒店另计，不堪细算 🫠</span></>}
-              {pendingEntry.reason === "holiday"          && <><br/><span style={{ fontSize:10, color:M.lChar }}>Daycare 放假你不休，谁说的 💔</span></>}
-              {pendingEntry.reason === "teacher_training" && <><br/><span style={{ fontSize:10, color:M.lChar }}>老师也要充电，你的钱也跟着充进去了 🔌</span></>}
+              {s.dailyLoss(fmt(pendingEntry.hours * hrCost))}
+              {pendingEntry.reason === "sick"             && <><br/><span style={{ fontSize:10, color:M.lChar }}>{s.sickNote}</span></>}
+              {pendingEntry.reason === "vacation"         && <><br/><span style={{ fontSize:10, color:M.lChar }}>{s.vacNote}</span></>}
+              {pendingEntry.reason === "holiday"          && <><br/><span style={{ fontSize:10, color:M.lChar }}>{s.holidayNote}</span></>}
+              {pendingEntry.reason === "teacher_training" && <><br/><span style={{ fontSize:10, color:M.lChar }}>{s.trainingNote}</span></>}
             </div>
           )}
           <button onClick={confirmEntry} style={{
@@ -447,7 +440,7 @@ export function CalendarSection({ yr, mo, dim, first, dh, hrCost, fmt, getEntry,
             background:`linear-gradient(135deg,${M.sage},${M.sageDk})`,
             border:"none", borderRadius:14, color:"white", fontSize:13, fontWeight:700,
             cursor:"pointer", fontFamily:"inherit", boxShadow:`0 4px 12px ${M.sage}40`,
-          }}>含泪确认</button>
+          }}>{s.confirmBtn}</button>
         </div>
       </>}
     </div>

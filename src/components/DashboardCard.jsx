@@ -1,9 +1,11 @@
 import { M } from "../constants";
+import { getStrings } from "../lib/i18n";
 import { Face } from "./icons";
 
 export function DashboardCard({ sunk, dailyCost, totalAbsDays, wdays, mood, fmt, getHumor,
-                                viewMode, quarter,
+                                viewMode, quarter, lang,
                                 sickDays, vacDays, holidayDays, trainingDays, otherDays }) {
+  const s = getStrings(lang);
   const reasonItems = [
     { icon:"💊", count:sickDays     },
     { icon:"✈️", count:vacDays      },
@@ -11,18 +13,20 @@ export function DashboardCard({ sunk, dailyCost, totalAbsDays, wdays, mood, fmt,
     { icon:"💸", count:trainingDays },
     { icon:"💔", count:otherDays    },
   ].filter(r => r.count > 0);
+
   const reportTitle =
-    viewMode === "month"   ? "当月份空气质量报告" :
-    viewMode === "quarter" ? `Q${quarter + 1} 季度空气质量报告` :
-                             "年度空气质量报告";
+    viewMode === "month"   ? s.reportMonth :
+    viewMode === "quarter" ? s.reportQuarter(quarter + 1) :
+                             s.reportYear;
   const subTitle =
-    viewMode === "month"   ? "本月已为 daycare 空气质量改善做出的超额贡献" :
-    viewMode === "quarter" ? "本季度已为 daycare 空气质量改善做出的超额贡献" :
-                             "本年度已为 daycare 空气质量改善做出的超额贡献";
+    viewMode === "month"   ? s.subMonth :
+    viewMode === "quarter" ? s.subQuarter :
+                             s.subYear;
   const emptyMsg =
-    viewMode === "month"   ? "本月全勤，宝宝是 daycare 真模范 🌟" :
-    viewMode === "quarter" ? "本季全勤，宝宝季度全勤奖 🏆" :
-                             "全年全勤，宝宝年度模范员工 🎖️";
+    viewMode === "month"   ? s.emptyMonth :
+    viewMode === "quarter" ? s.emptyQuarter :
+                             s.emptyYear;
+
   return (
     <div style={{
       background:M.white, borderRadius:28, padding:"20px 20px 16px", margin:"12px 0",
@@ -37,22 +41,22 @@ export function DashboardCard({ sunk, dailyCost, totalAbsDays, wdays, mood, fmt,
         color: sunk > 0 ? M.roseDk : M.sageDk, transition:"color 0.3s",
       }}>
         {fmt(sunk)}
-        <span style={{ fontSize:14, fontWeight:600, letterSpacing:0, marginLeft:4, opacity:0.7 }}>已蒸发</span>
+        <span style={{ fontSize:14, fontWeight:600, letterSpacing:0, marginLeft:4, opacity:0.7 }}>{s.evaporated}</span>
       </div>
       {sunk > 0
         ? <p style={{ fontSize:12, color:M.rose, margin:"6px 0 0", fontWeight:600, lineHeight:1.4 }}>{getHumor(sunk)}</p>
         : <p style={{ fontSize:12, color:M.sage, margin:"6px 0 0", fontWeight:600 }}>{emptyMsg}</p>
       }
 
-      {/* ── Bottom: 3-stat row (horizontal, emoji style) ── */}
+      {/* ── Bottom: 3-stat row ── */}
       <div style={{
         display:"flex", justifyContent:"center", gap:20, marginTop:14, paddingTop:12,
         borderTop:`1px dashed ${M.brown}30`, flexWrap:"wrap",
       }}>
         {[
-          { l:"应入园",  v:`${wdays}天`,                   i:"📅" },
-          { l:"日均学费", v:fmt(dailyCost),                 i:"💰" },
-          { l:"缺勤",  v:`${totalAbsDays.toFixed(1)}天`,  i:"🏠" },
+          { l:s.statSchoolDays, v:s.daysInt(wdays),                    i:"📅" },
+          { l:s.statDailyRate,  v:fmt(dailyCost),                       i:"💰" },
+          { l:s.statMissed,     v:s.daysFloat(totalAbsDays.toFixed(1)), i:"🏠" },
         ].map((x, idx) => (
           <div key={idx} style={{ textAlign:"center", minWidth:64 }}>
             <div style={{ fontSize:15 }}>{x.i}</div>
@@ -71,7 +75,7 @@ export function DashboardCard({ sunk, dailyCost, totalAbsDays, wdays, mood, fmt,
               background:`${M.cream}80`, borderRadius:10, padding:"3px 8px",
             }}>
               <span style={{ fontSize:12 }}>{r.icon}</span>
-              <span style={{ fontSize:11, fontWeight:700, color:M.char }}>{r.count}天</span>
+              <span style={{ fontSize:11, fontWeight:700, color:M.char }}>{s.daysFloat(r.count)}</span>
             </div>
           ))}
         </div>

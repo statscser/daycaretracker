@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { M, CURRENCIES, HUMOR_MAP, HUMOR_DEFAULT, ABSENCE_REASONS } from "./constants";
+import { M, CURRENCIES, HUMOR_MAP, HUMOR_DEFAULT, HUMOR_MAP_EN, HUMOR_DEFAULT_EN, ABSENCE_REASONS } from "./constants";
+import { getStrings } from "./lib/i18n";
 import { loadData, saveData, isFirstTime, isPrivacySeen, markPrivacySeen } from "./lib/storage";
 import { getDays, getFirst, getTuitionForMonth, calculatePeriodStats, aggregateStats } from "./lib/stats";
 import { HeaderSection }    from "./components/HeaderSection";
@@ -26,7 +27,7 @@ export default function App() {
   useEffect(() => { saveData(data); }, [data]);
 
   const { settings, tuitionHistory, absences } = data;
-  const { currency, sh, eh } = settings;
+  const { currency, sh, eh, lang = "zh" } = settings;
 
   const updateSettings = (updates) =>
     setData(d => ({ ...d, settings: { ...d.settings, ...updates } }));
@@ -61,7 +62,9 @@ export default function App() {
   const moStats   = calculatePeriodStats(absences, yr, mo, { sh, eh, tuition: moTuition });
 
   const getHumor = useCallback((cost) => {
-    const pool = HUMOR_MAP[currency] || HUMOR_DEFAULT;
+    const map = lang === "en" ? HUMOR_MAP_EN : HUMOR_MAP;
+    const def = lang === "en" ? HUMOR_DEFAULT_EN : HUMOR_DEFAULT;
+    const pool = map[currency] || def;
     const eligible = pool.filter(h => cost >= h.min);
     const source = eligible.length > 0 ? eligible : pool.slice(0, 1);
     const d = new Date();
@@ -69,7 +72,7 @@ export default function App() {
       Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 86_400_000);
     const modeOffset = viewMode === "month" ? 0 : viewMode === "quarter" ? 5 : 11;
     return source[(randomBase + dayNum + modeOffset) % source.length].fn(cost);
-  }, [currency, viewMode, randomBase]);
+  }, [currency, lang, viewMode, randomBase]);
 
   const mk       = `${yr}-${mo}`;
   const isWe     = (d) => { const w = new Date(yr, mo, d).getDay(); return w === 0 || w === 6; };
@@ -125,16 +128,16 @@ export default function App() {
       <div style={{ position:"absolute",top:-60,right:-40,width:160,height:160,borderRadius:"50%",background:`${M.sage}18`,pointerEvents:"none"}}/>
       <div style={{ position:"absolute",top:200,left:-50,width:120,height:120,borderRadius:"50%",background:`${M.rose}15`,pointerEvents:"none"}}/>
 
-      <HeaderSection onSettingsClick={() => setSetup(true)} />
+      <HeaderSection onSettingsClick={() => setSetup(true)} lang={lang} />
 
-      <SegmentedControl value={viewMode} onChange={setViewMode} />
+      <SegmentedControl value={viewMode} onChange={setViewMode} lang={lang} />
 
       {needsSetup && (
         <OnboardingModal onSave={handleOnboardingSave} />
       )}
 
       {needsPrivacy && (
-        <PrivacyModal onDismiss={() => { markPrivacySeen(); setNeedsPrivacy(false); }} />
+        <PrivacyModal onDismiss={() => { markPrivacySeen(); setNeedsPrivacy(false); }} lang={lang} />
       )}
 
       {setup && (
@@ -143,7 +146,7 @@ export default function App() {
           tuitionHistory={tuitionHistory}
           onUpdateSettings={updateSettings}
           onUpdateTuitionHistory={updateTuitionHistory}
-          cur={cur} fmt={fmt}
+          cur={cur} fmt={fmt} lang={lang}
           onClose={() => setSetup(false)}
         />
       )}
@@ -151,7 +154,7 @@ export default function App() {
       <DashboardCard
         sunk={sunk} dailyCost={dailyCost} totalAbsDays={totalAbsDays}
         wdays={wdays} mood={mood} fmt={fmt} getHumor={getHumor}
-        viewMode={viewMode} quarter={quarter}
+        viewMode={viewMode} quarter={quarter} lang={lang}
         sickDays={sickDays} vacDays={vacDays} holidayDays={holidayDays}
         trainingDays={trainingDays} otherDays={otherDays}
       />
@@ -162,35 +165,45 @@ export default function App() {
         getEntry={getEntry} setEntry={setEntry}
         isWe={isWe} isToday={isToday} ratio={ratio}
         onPrev={prev} onNext={next}
-        viewMode={viewMode} quarter={quarter}
+        viewMode={viewMode} quarter={quarter} lang={lang}
         absences={absences} tuitionHistory={tuitionHistory} sh={sh} eh={eh}
         onGoToMonth={(m) => { setViewMode("month"); setMo(m); }}
         onToday={() => { setViewMode("month"); setYr(now.getFullYear()); setMo(now.getMonth()); }}
       />
 
       {/* Legend */}
-      <div style={{ display:"flex", justifyContent:"center", gap:10, marginTop:12, flexWrap:"wrap" }}>
-        {[{ c:M.sage, l:"全勤 ✨" }, ...ABSENCE_REASONS.map(r => ({ c:r.color, l:r.label }))].map((x, i) => (
-          <div key={i} style={{ display:"flex", alignItems:"center", gap:4 }}>
-            <div style={{ width:10, height:10, borderRadius:"50%", background:x.c }}/>
-            <span style={{ fontSize:10, fontWeight:600, color:M.lChar }}>{x.l}</span>
+      {(() => {
+        const s = getStrings(lang);
+        return (
+          <div style={{ display:"flex", justifyContent:"center", gap:10, marginTop:12, flexWrap:"wrap" }}>
+            {[{ c:M.sage, l:s.legendPerfect }, ...ABSENCE_REASONS.map(r => ({ c:r.color, l:lang === "en" ? r.labelEn : r.label }))].map((x, i) => (
+              <div key={i} style={{ display:"flex", alignItems:"center", gap:4 }}>
+                <div style={{ width:10, height:10, borderRadius:"50%", background:x.c }}/>
+                <span style={{ fontSize:10, fontWeight:600, color:M.lChar }}>{x.l}</span>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        );
+      })()}
 
       {/* Footer */}
-      <div style={{ textAlign:"center", marginTop:20, fontSize:10, color:`${M.lChar}88`, fontWeight:600, lineHeight:1.6 }}>
-        <p style={{ margin:0 }}>「养娃就是一场看不到尽头的天使投资」</p>
-        <p style={{ margin:"2px 0 0", fontSize:9 }}>—— 致每一位含泪续费的爸妈</p>
-        <p style={{ margin:"10px 0 0", fontSize:10, color:`${M.lChar}77` }}>
-          有建议或报错？请告诉我！&nbsp;
-          <a href="https://xhslink.com/m/A11u8iECHmb" target="_blank" rel="noopener noreferrer"
-            style={{ color:M.roseDk, textDecoration:"underline", fontWeight:600 }}>小红书</a>
-          {" · "}
-          <a href="mailto:miniappbygrace@gmail.com"
-            style={{ color:M.roseDk, textDecoration:"underline", fontWeight:600 }}>邮箱</a>
-        </p>
-      </div>
+      {(() => {
+        const s = getStrings(lang);
+        return (
+          <div style={{ textAlign:"center", marginTop:20, fontSize:10, color:`${M.lChar}88`, fontWeight:600, lineHeight:1.6 }}>
+            <p style={{ margin:0 }}>{s.footerQuote}</p>
+            <p style={{ margin:"2px 0 0", fontSize:9 }}>{s.footerSub}</p>
+            <p style={{ margin:"10px 0 0", fontSize:10, color:`${M.lChar}77` }}>
+              {s.footerFeedback}&nbsp;
+              <a href="https://xhslink.com/m/A11u8iECHmb" target="_blank" rel="noopener noreferrer"
+                style={{ color:M.roseDk, textDecoration:"underline", fontWeight:600 }}>{s.footerXhs}</a>
+              {" · "}
+              <a href="mailto:miniappbygrace@gmail.com"
+                style={{ color:M.roseDk, textDecoration:"underline", fontWeight:600 }}>{s.footerEmail}</a>
+            </p>
+          </div>
+        );
+      })()}
     </div>
   );
 }

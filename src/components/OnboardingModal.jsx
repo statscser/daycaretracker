@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { M, CURRENCIES } from "../constants";
 import { markPrivacySeen } from "../lib/storage";
+import { getStrings } from "../lib/i18n";
 
 export function OnboardingModal({ onSave }) {
   const today = new Date().toISOString().slice(0, 10);
+  const [lang,     setLang]     = useState("zh");
   const [currency, setCurrency] = useState("USD");
   const [amount,   setAmount]   = useState("");
   const [startDate,setStartDate]= useState(today);
@@ -12,18 +14,26 @@ export function OnboardingModal({ onSave }) {
   const [amountErr,setAmountErr]= useState(false);
 
   const cur = CURRENCIES.find(c => c.code === currency) || CURRENCIES[0];
+  const s = getStrings(lang);
 
   const handleSave = () => {
     if (!amount || Number(amount) <= 0) { setAmountErr(true); return; }
     markPrivacySeen();
     onSave({
-      settings:       { currency, sh, eh },
+      settings:       { currency, sh, eh, lang },
       tuitionHistory: [{ startDate, amount: Number(amount) }],
     });
   };
 
+  const langPillStyle = (active) => ({
+    padding:"6px 14px", borderRadius:14, fontSize:12, fontWeight:700,
+    fontFamily:"inherit", cursor:"pointer", transition:"all 0.15s",
+    border: active ? `2px solid ${M.sageDk}` : `1.5px solid ${M.brown}30`,
+    background: active ? `${M.sage}30` : M.white,
+    color:M.char,
+  });
+
   return (
-    // Backdrop doubles as flex centering container — no transform/calc needed
     <div style={{
       position:"fixed", top:0, left:0, right:0, bottom:0,
       background:`${M.cream}e0`,
@@ -45,17 +55,28 @@ export function OnboardingModal({ onSave }) {
         <div style={{ textAlign:"center", marginBottom:22 }}>
           <img src="/icon.svg" alt="icon" style={{ width:72, height:72, marginBottom:10 }} />
           <h2 style={{ margin:0, fontSize:17, fontWeight:800, color:M.char, lineHeight:1.4 }}>
-            Hi，欢迎使用宝宝碎钞机！
+            {s.onboardTitle}
           </h2>
           <p style={{ margin:"6px 0 0", fontSize:12, color:M.lChar, fontWeight:600, lineHeight:1.5 }}>
-            先完成碎钞设定吧💰
+            {s.onboardSub}
           </p>
+        </div>
+
+        {/* Language — first section */}
+        <div style={{ marginBottom:16 }}>
+          <label style={{ fontSize:12, fontWeight:700, color:M.lChar, display:"block", marginBottom:6 }}>
+            {s.settingsLang}
+          </label>
+          <div style={{ display:"flex", gap:6 }}>
+            <button onClick={() => setLang("zh")} style={langPillStyle(lang === "zh")}>🇨🇳 中文</button>
+            <button onClick={() => setLang("en")} style={langPillStyle(lang === "en")}>🇺🇸 English</button>
+          </div>
         </div>
 
         {/* Currency */}
         <div style={{ marginBottom:16 }}>
           <label style={{ fontSize:12, fontWeight:700, color:M.lChar, display:"block", marginBottom:6 }}>
-            💱 货币 / Currency
+            {s.onboardCurrency}
           </label>
           <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
             {CURRENCIES.map(c => (
@@ -73,11 +94,11 @@ export function OnboardingModal({ onSave }) {
         {/* Tuition amount */}
         <div style={{ marginBottom:16 }}>
           <label style={{ fontSize:12, fontWeight:700, color:M.lChar, display:"block", marginBottom:6 }}>
-            💰 每月学费 ({cur.symbol})
+            {s.onboardTuition(cur.symbol)}
           </label>
           <input
             type="text" inputMode="numeric" pattern="[0-9]*" value={amount}
-            placeholder={`请输入金额，如 ${currency === "CNY" ? "3000" : "2000"}`}
+            placeholder={s.onboardPH(currency)}
             onChange={e => { setAmount(e.target.value.replace(/[^0-9]/g, "")); setAmountErr(false); }}
             style={{
               width:"100%", boxSizing:"border-box", padding:"10px 14px",
@@ -89,7 +110,7 @@ export function OnboardingModal({ onSave }) {
           />
           {amountErr && (
             <p style={{ margin:"4px 0 0", fontSize:11, color:M.roseDk, fontWeight:600 }}>
-              学费不能为空，先填一下嘛 💸
+              {s.onboardAmtErr}
             </p>
           )}
         </div>
@@ -97,7 +118,7 @@ export function OnboardingModal({ onSave }) {
         {/* Start date */}
         <div style={{ marginBottom:16 }}>
           <label style={{ fontSize:12, fontWeight:700, color:M.lChar, display:"block", marginBottom:6 }}>
-            📅 入园起始日期
+            {s.onboardDateLbl}
           </label>
           <div style={{ position:"relative" }}>
             <input
@@ -126,8 +147,8 @@ export function OnboardingModal({ onSave }) {
         {/* Drop-off / Pick-up */}
         <div style={{ display:"flex", gap:12, marginBottom:24 }}>
           {[
-            { label:"🌅 入园时间", val:sh, setter:setSh, opts:Array.from({length:12},(_,i)=>i+6)  },
-            { label:"🌆 离园时间", val:eh, setter:setEh, opts:Array.from({length:12},(_,i)=>i+12) },
+            { label:s.onboardDropoff, val:sh, setter:setSh, opts:Array.from({length:12},(_,i)=>i+6)  },
+            { label:s.onboardPickup,  val:eh, setter:setEh, opts:Array.from({length:12},(_,i)=>i+12) },
           ].map((x, i) => (
             <div key={i} style={{ flex:1 }}>
               <label style={{ fontSize:12, fontWeight:700, color:M.lChar, display:"block", marginBottom:6 }}>
@@ -155,14 +176,14 @@ export function OnboardingModal({ onSave }) {
           boxShadow:`0 4px 16px ${M.sage}50`,
           letterSpacing:0.3,
         }}>
-          开始碎钞 ✨
+          {s.onboardBtn}
         </button>
 
         <p style={{ textAlign:"center", margin:"12px 0 0", fontSize:10, color:`${M.lChar}88`, fontWeight:600 }}>
-          这些设置之后随时可以改，放心填！
+          {s.onboardHint}
         </p>
         <p style={{ textAlign:"center", margin:"8px 0 0", fontSize:10, color:`${M.lChar}66`, fontWeight:500, lineHeight:1.5 }}>
-          🔒 所有数据仅存储在您的设备本地，不会上传至任何服务器
+          {s.onboardPrivacy}
         </p>
       </div>
     </div>
